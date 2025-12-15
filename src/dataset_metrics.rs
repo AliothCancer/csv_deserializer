@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use itertools::Itertools;
 
-use crate::{CsvDataset, CsvValue};
+use crate::{CsvAny, CsvColumn, CsvDataset};
 
 pub struct ColumnMetrics {
     pub column_name: String,
@@ -11,7 +11,7 @@ pub struct ColumnMetrics {
     pub number_of_strings: u32,
     pub number_of_floats: u32,
     pub number_of_ints: u32,
-    pub unique_values: Vec<CsvValue>,
+    pub unique_values: Vec<CsvAny>,
 }
 
 impl ColumnMetrics {
@@ -29,23 +29,33 @@ impl ColumnMetrics {
         let mut number_of_floats: u32 = 0;
         let mut number_of_ints: u32 = 0;
 
-        let mut values: Vec<&CsvValue> = dataset.values.iter().map(|x| &x[index]).collect();
+        let mut values: Vec<&CsvAny> = dataset
+            .values
+            .iter()
+            .map(|x| {
+                if let CsvColumn::AnyColumn(x) = x {
+                    &x[index]
+                } else {
+                    unimplemented!()
+                }
+            })
+            .collect();
         values.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         let unique_values = values
             .into_iter()
             .inspect(|&x| {
                 match x {
-                    CsvValue::Str(_) => number_of_strings += 1,
-                    CsvValue::Int(_) => number_of_ints += 1,
-                    CsvValue::Float(_) => number_of_floats += 1,
-                    CsvValue::Null => number_of_nulls += 1,
-                    CsvValue::Empty => number_of_empties += 1,
+                    CsvAny::Str(_) => number_of_strings += 1,
+                    CsvAny::Int(_) => number_of_ints += 1,
+                    CsvAny::Float(_) => number_of_floats += 1,
+                    CsvAny::Null => number_of_nulls += 1,
+                    CsvAny::Empty => number_of_empties += 1,
                 };
             })
             .dedup_by(|a, b| a == b)
             .cloned()
-            .collect::<Vec<CsvValue>>();
+            .collect::<Vec<CsvAny>>();
 
         Self {
             column_name: column_name.to_string(),
@@ -69,9 +79,9 @@ impl Display for ColumnMetrics {
             (self.number_of_ints, "Ints"),
         ]
         .into_iter()
-        .map(|(x, str_type)| match x {
+        .map(|(x, str)| match x {
             0 => "".to_string(),
-            n => format!("\n\t{str_type}: {n}"),
+            n => format!("\n\t{str}: {n}"),
         })
         .collect::<String>();
 
