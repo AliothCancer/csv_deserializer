@@ -1,9 +1,9 @@
-mod csv_types;
-use csv_types::*;
+// mod csv_types;
+// use csv_types::*;
 
 use std::{error::Error, fs::File};
 
-use csv_deserializer::{CsvDataset, NullValues, create_enum, enum_gen::generate_enums_from};
+use csv_deserializer::{CsvDataset, NullValues, create_enum, enum_gen::generate_enums_from, struct_gen::gen_struct};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let path = "train.csv";
@@ -15,8 +15,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
     
     let enums = generate_enums_from(&dataset);
-    println!("#![allow(unused)]\nuse csv_deserializer::create_enum;
-\n{}", enums);
+    let struc = gen_struct(&dataset);
+    println!("#![allow(unused,non_snake_case)]\nuse csv_deserializer::create_enum;
+\n{}\n{}", enums, struc);
     Ok(())
 }
 

@@ -1,29 +1,42 @@
-pub mod dataset_metrics;
+pub mod dataset_info;
 
 pub mod struct_gen;
 pub mod enum_gen;
 
-pub mod enum_sanitizer;
+pub mod sanitizer;
 
 use std::io;
 
 use csv::Reader;
 
+use crate::sanitizer::sanitize_identifier;
+
 #[derive(Debug)]
 pub struct CsvDataset {
-    pub names: Vec<String>,
+    pub names: Vec<ColName>,
     pub values: Vec<Vec<CsvAny>>,
     pub null_values: NullValues,
 }
+#[derive(Debug)]
+pub struct ColName{
+    pub raw: String,
+    pub sanitized: SanitizedStr
+}
 
+
+#[derive(Debug)]
+pub struct SanitizedStr(String);
 
 #[derive(Debug)]
 pub struct NullValues(pub &'static [&'static str]);
 
 impl CsvDataset {
     pub fn new<R: io::Read>(mut reader: Reader<R>, null_values: NullValues) -> Self {
-        let names: Vec<String> = reader.headers().unwrap().iter().map(String::from).collect();
-
+        let names: Vec<ColName> = reader.headers().unwrap().iter().map(|str|{
+            let sanitized = SanitizedStr(sanitize_identifier(str));
+            let raw = str.to_string();
+            ColName { raw, sanitized }
+        }).collect();
         let mut values: Vec<Vec<CsvAny>> = (0..names.len()).map(|_|Vec::new()).collect();
         reader.into_records().for_each(|x| {
             x.unwrap()

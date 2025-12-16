@@ -1,5 +1,7 @@
-#![allow(unused)]
-use csv_deserializer::create_enum;
+#![allow(unused, non_snake_case)]
+use std::str::FromStr;
+
+use csv_deserializer::{CsvDataset, create_enum};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum Id {
@@ -825,5 +827,117 @@ impl std::str::FromStr for CsvColumns {
             "SalePrice" => Ok(CsvColumns::SalePrice),
             _ => Err(format!("Unknown string: '{}'", s)),
         }
+    }
+}
+pub struct CsvDataFrame {
+    Id: Vec<Id>,
+    MSSubClass: Vec<MSSubClass>,
+    MSZoning: Vec<MSZoning>,
+    LotFrontage: Vec<LotFrontage>,
+    LotArea: Vec<LotArea>,
+    Street: Vec<Street>,
+    Alley: Vec<Alley>,
+    LotShape: Vec<LotShape>,
+    LandContour: Vec<LandContour>,
+    Utilities: Vec<Utilities>,
+    LotConfig: Vec<LotConfig>,
+    LandSlope: Vec<LandSlope>,
+    Neighborhood: Vec<Neighborhood>,
+    ConditionOne: Vec<ConditionOne>,
+    ConditionTwo: Vec<ConditionTwo>,
+    BldgType: Vec<BldgType>,
+    HouseStyle: Vec<HouseStyle>,
+    OverallQual: Vec<OverallQual>,
+    OverallCond: Vec<OverallCond>,
+    YearBuilt: Vec<YearBuilt>,
+    YearRemodAdd: Vec<YearRemodAdd>,
+    RoofStyle: Vec<RoofStyle>,
+    RoofMatl: Vec<RoofMatl>,
+    ExteriorOnest: Vec<ExteriorOnest>,
+    ExteriorTwond: Vec<ExteriorTwond>,
+    MasVnrType: Vec<MasVnrType>,
+    MasVnrArea: Vec<MasVnrArea>,
+    ExterQual: Vec<ExterQual>,
+    ExterCond: Vec<ExterCond>,
+    Foundation: Vec<Foundation>,
+    BsmtQual: Vec<BsmtQual>,
+    BsmtCond: Vec<BsmtCond>,
+    BsmtExposure: Vec<BsmtExposure>,
+    BsmtFinTypeOne: Vec<BsmtFinTypeOne>,
+    BsmtFinSFOne: Vec<BsmtFinSFOne>,
+    BsmtFinTypeTwo: Vec<BsmtFinTypeTwo>,
+    BsmtFinSFTwo: Vec<BsmtFinSFTwo>,
+    BsmtUnfSF: Vec<BsmtUnfSF>,
+    TotalBsmtSF: Vec<TotalBsmtSF>,
+    Heating: Vec<Heating>,
+    HeatingQC: Vec<HeatingQC>,
+    CentralAir: Vec<CentralAir>,
+    Electrical: Vec<Electrical>,
+    OnestFlrSF: Vec<OnestFlrSF>,
+    TwondFlrSF: Vec<TwondFlrSF>,
+    LowQualFinSF: Vec<LowQualFinSF>,
+    GrLivArea: Vec<GrLivArea>,
+    BsmtFullBath: Vec<BsmtFullBath>,
+    BsmtHalfBath: Vec<BsmtHalfBath>,
+    FullBath: Vec<FullBath>,
+    HalfBath: Vec<HalfBath>,
+    BedroomAbvGr: Vec<BedroomAbvGr>,
+    KitchenAbvGr: Vec<KitchenAbvGr>,
+    KitchenQual: Vec<KitchenQual>,
+    TotRmsAbvGrd: Vec<TotRmsAbvGrd>,
+    Functional: Vec<Functional>,
+    Fireplaces: Vec<Fireplaces>,
+    FireplaceQu: Vec<FireplaceQu>,
+    GarageType: Vec<GarageType>,
+    GarageYrBlt: Vec<GarageYrBlt>,
+    GarageFinish: Vec<GarageFinish>,
+    GarageCars: Vec<GarageCars>,
+    GarageArea: Vec<GarageArea>,
+    GarageQual: Vec<GarageQual>,
+    GarageCond: Vec<GarageCond>,
+    PavedDrive: Vec<PavedDrive>,
+    WoodDeckSF: Vec<WoodDeckSF>,
+    OpenPorchSF: Vec<OpenPorchSF>,
+    EnclosedPorch: Vec<EnclosedPorch>,
+    ThreeSsnPorch: Vec<ThreeSsnPorch>,
+    ScreenPorch: Vec<ScreenPorch>,
+    PoolArea: Vec<PoolArea>,
+    PoolQC: Vec<PoolQC>,
+    Fence: Vec<Fence>,
+    MiscFeature: Vec<MiscFeature>,
+    MiscVal: Vec<MiscVal>,
+    MoSold: Vec<MoSold>,
+    YrSold: Vec<YrSold>,
+    SaleType: Vec<SaleType>,
+    SaleCondition: Vec<SaleCondition>,
+    SalePrice: Vec<SalePrice>,
+}
+
+impl CsvDataFrame {
+    fn new(dataset: &mut CsvDataset) -> Self {
+        let Id = dataset.values.pop().unwrap().into_iter().map(|id|{
+            match id {
+                csv_deserializer::CsvAny::Int(i) => Id::Int(i),
+                csv_deserializer::CsvAny::Null => Id::Null,
+                _ => panic!()
+            }
+        }).collect::<Vec<Id>>();
+        
+        dataset
+            .raw_names
+            .iter()
+            .enumerate()
+            .map(|(col_index, name)| match CsvColumns::from_str(name){
+                Ok(csv_col) => {
+                    let k = &dataset.values[col_index].iter().map(|value|{
+                        
+                    });
+                },
+                Err(err) => panic!("{err}"),
+            });
+
+
+
+        todo!()
     }
 }

@@ -1,4 +1,4 @@
-use crate::{CsvAny, CsvDataset, dataset_metrics::ColumnMetrics, enum_sanitizer::sanitize_identifier};
+use crate::{ColName, CsvAny, CsvDataset, SanitizedStr, dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
 
 
 #[macro_export]
@@ -71,36 +71,37 @@ pub fn generate_enums_from(dataset: &CsvDataset) -> String{
     let mut full_string = String::new();
 
     let col_name_iter = dataset.names.iter();
-    let enums = col_name_iter.clone().map(|name| {
-        let mut col_metrics = ColumnMetrics::new(dataset, name);
+    let enums = col_name_iter.clone().map(|col_name| {
+        let mut col_metrics = ColumnInfo::new(dataset, &col_name.raw);
 
-        if !col_metrics.unique_values.contains(&CsvAny::Null){
-            col_metrics.unique_values.push(CsvAny::Null);
+        if !col_metrics.unique_values.iter().any(|x| x.csvany == CsvAny::Null){
+            let str = String::from("Null");
+            col_metrics.unique_values.push(Variant{ raw: str.clone(), sanitized: str, csvany: CsvAny::Null});
         }
 
-        let name = sanitize_identifier(name);
+        
         let unique_val_iter = col_metrics.unique_values.iter();
 
         let is_str = unique_val_iter.clone().all(|x| {
-            matches!(x, CsvAny::Str(_) | CsvAny::Empty | CsvAny::Null)
+            matches!(x.csvany, CsvAny::Str(_) | CsvAny::Empty | CsvAny::Null)
         });
         let is_int = unique_val_iter.clone().all(|x| {
-            matches!(x, CsvAny::Int(_) | CsvAny::Empty | CsvAny::Null)
+            matches!(x.csvany, CsvAny::Int(_) | CsvAny::Empty | CsvAny::Null)
         });
         let is_float = unique_val_iter.clone().all(|x| {
-            matches!(x, CsvAny::Float(_) | CsvAny::Empty | CsvAny::Null)
+            matches!(x.csvany, CsvAny::Float(_) | CsvAny::Empty | CsvAny::Null)
         });
         
         if is_int{
-            gen_int_enum(&name)
+            gen_int_enum(col_name)
         }else if is_float{
-            gen_float_enum(&name)
+            gen_float_enum(col_name)
         }
         else if is_str{
-            gen_str_enum(&name, unique_val_iter)
+            gen_str_enum(col_name, unique_val_iter)
         }else {
-            println!("enum generation log: column `{name}` contains numbers and strings");
-            gen_str_enum(&name, unique_val_iter)
+            println!("enum generation log: column `{}` contains numbers and strings", col_name.raw);
+            gen_str_enum(col_name, unique_val_iter)
         }
         
     } + "\n\n").collect::<String>();
@@ -108,8 +109,8 @@ pub fn generate_enums_from(dataset: &CsvDataset) -> String{
     let csv_columns_enum_name = "CsvColumns";
     let mut columns_enum = format!("enum {csv_columns_enum_name}{{\n");
 
-    col_name_iter.clone().for_each(|raw_name|{
-        columns_enum.push_str(&format!("{},\n", sanitize_identifier(raw_name)));
+    col_name_iter.clone().for_each(|col_name|{
+        columns_enum.push_str(&format!("{},\n", col_name.sanitized.0));
     });
     columns_enum.push_str("}\n\n");
 
@@ -119,9 +120,10 @@ impl std::str::FromStr for {csv_columns_enum_name}{{
     fn from_str(s: &str) -> Result<Self, Self::Err> {{ 
         match s{{
 ");
-    col_name_iter.for_each(|raw_name|{
-        let sanitized_name = sanitize_identifier(raw_name);
-        columns_enum_from_str.push_str(&format!("\t\t\t\"{raw_name}\" => Ok({csv_columns_enum_name}::{sanitized_name}),\n"));
+    col_name_iter.for_each(|col_name|{
+        let ColName{raw, sanitized} = col_name;
+        let SanitizedStr(sanitized) = sanitized; 
+        columns_enum_from_str.push_str(&format!("\t\t\t\"{raw}\" => Ok({csv_columns_enum_name}::{sanitized}),\n"));
     });
     // last case
     columns_enum_from_str.push_str("_ => Err(format!(\"Unknown string: '{}'\", s)),\n");
@@ -133,9 +135,9 @@ impl std::str::FromStr for {csv_columns_enum_name}{{
     full_string
 }
 
-fn gen_str_enum<'a>(name: &str, unique_values: impl Iterator<Item = &'a CsvAny>) -> String{
+fn gen_str_enum<'a>(col_name: &ColName, unique_values: impl Iterator<Item = &'a Variant>) -> String{
     let variants = unique_values
-            .map(|var| match var {
+            .map(|var| match &var.csvany {
                 CsvAny::Int(int) => sanitize_identifier(&int.to_string()),
                 CsvAny::Str(str) => format!("\"{}\" => {}", str, sanitize_identifier(str)),
                 CsvAny::Empty => "Empty".to_string(),
@@ -143,18 +145,18 @@ fn gen_str_enum<'a>(name: &str, unique_values: impl Iterator<Item = &'a CsvAny>)
                 CsvAny::Float(_) => panic!("Should not be used on float since they cannot represent categories"),
             } + ",\n")
             .collect::<String>();
-        format!("create_enum!({name};\n{variants});")
+        format!("create_enum!({};\n{variants});", col_name.sanitized.0)
 }
-fn gen_float_enum(name: &str) -> String {
+fn gen_float_enum(col_name: &ColName) -> String {
     format!("
     #[derive(Debug, Clone, Copy, PartialEq)]
-    enum {name} {{ Float(f64), Null }}
-    ")
+    enum {} {{ Float(f64), Null }}
+    ", col_name.sanitized.0)
 }
 
-fn gen_int_enum(name: &str) -> String {
+fn gen_int_enum(col_name: &ColName) -> String {
     format!("
     #[derive(Debug, Clone, Copy, PartialEq)]
-    enum {name} {{ Int(i64), Null }}
-    ")
+    enum {} {{ Int(i64), Null }}
+    ", col_name.sanitized.0)
 }
