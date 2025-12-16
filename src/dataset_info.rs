@@ -2,11 +2,11 @@ use std::fmt::Display;
 
 use itertools::Itertools;
 
-use crate::{CsvAny, CsvDataset, sanitizer::sanitize_identifier};
+use crate::{ColName, CsvAny, sanitizer::sanitize_identifier};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ColumnInfo {
-    pub column_name: String,
+    pub column_name: ColName,
     pub number_of_empties: u32,
     pub number_of_nulls: u32,
     pub number_of_strings: u32,
@@ -15,7 +15,7 @@ pub struct ColumnInfo {
     pub unique_values: Vec<Variant>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Variant {
     pub raw: String,
     pub sanitized: String,
@@ -23,9 +23,8 @@ pub struct Variant {
 }
 
 impl ColumnInfo {
-    pub fn new(dataset: &CsvDataset, column_name: &str) -> Self {
-        let (column_index, column_name) = dataset
-            .names
+    pub fn new(column_names: &[ColName], values: &[Vec<CsvAny>], column_name: &str) -> Self {
+        let (column_index, column_name) = column_names
             .iter()
             .enumerate()
             .find(|(_, x)| column_name.contains(x.raw.as_str()))
@@ -37,7 +36,7 @@ impl ColumnInfo {
         let mut number_of_floats: u32 = 0;
         let mut number_of_ints: u32 = 0;
 
-        let mut values: Vec<&CsvAny> = dataset.values[column_index].iter().collect();
+        let mut values: Vec<&CsvAny> = values[column_index].iter().collect();
         values.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         let unique_values = values
@@ -87,7 +86,7 @@ impl ColumnInfo {
             .collect::<Vec<Variant>>();
 
         Self {
-            column_name: column_name.raw.clone(),
+            column_name: column_name.clone(),
             number_of_empties,
             number_of_nulls,
             number_of_strings,
@@ -122,7 +121,7 @@ impl Display for ColumnInfo {
         write!(
             f,
             "Name: {}\n\nTypes:{}\n\nUnique Values:{}",
-            self.column_name, render, unique_values
+            self.column_name.sanitized.0, render, unique_values
         )
     }
 }

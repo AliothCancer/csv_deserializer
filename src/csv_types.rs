@@ -1,7 +1,7 @@
 #![allow(unused, non_snake_case)]
 use std::str::FromStr;
 
-use csv_deserializer::{CsvDataset, create_enum};
+use csv_deserializer::create_enum;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum Id {
@@ -9,10 +9,28 @@ enum Id {
     Null,
 }
 
+impl std::str::FromStr for Id {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(Id::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum MSSubClass {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for MSSubClass {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(MSSubClass::Int(i))
+    }
 }
 
 create_enum!(MSZoning;
@@ -30,10 +48,28 @@ enum LotFrontage {
     Null,
 }
 
+impl std::str::FromStr for LotFrontage {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(LotFrontage::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum LotArea {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for LotArea {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(LotArea::Int(i))
+    }
 }
 
 create_enum!(Street;
@@ -167,10 +203,28 @@ enum OverallQual {
     Null,
 }
 
+impl std::str::FromStr for OverallQual {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(OverallQual::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum OverallCond {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for OverallCond {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(OverallCond::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -179,10 +233,28 @@ enum YearBuilt {
     Null,
 }
 
+impl std::str::FromStr for YearBuilt {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(YearBuilt::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum YearRemodAdd {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for YearRemodAdd {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(YearRemodAdd::Int(i))
+    }
 }
 
 create_enum!(RoofStyle;
@@ -260,6 +332,15 @@ enum MasVnrArea {
     Null,
 }
 
+impl std::str::FromStr for MasVnrArea {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(MasVnrArea::Int(i))
+    }
+}
+
 create_enum!(ExterQual;
 "Ex" => Ex,
 "Fa" => Fa,
@@ -327,6 +408,15 @@ enum BsmtFinSFOne {
     Null,
 }
 
+impl std::str::FromStr for BsmtFinSFOne {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(BsmtFinSFOne::Int(i))
+    }
+}
+
 create_enum!(BsmtFinTypeTwo;
 "ALQ" => ALQ,
 "BLQ" => BLQ,
@@ -343,16 +433,43 @@ enum BsmtFinSFTwo {
     Null,
 }
 
+impl std::str::FromStr for BsmtFinSFTwo {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(BsmtFinSFTwo::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum BsmtUnfSF {
     Int(i64),
     Null,
 }
 
+impl std::str::FromStr for BsmtUnfSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(BsmtUnfSF::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum TotalBsmtSF {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for TotalBsmtSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(TotalBsmtSF::Int(i))
+    }
 }
 
 create_enum!(Heating;
@@ -396,10 +513,28 @@ enum OnestFlrSF {
     Null,
 }
 
+impl std::str::FromStr for OnestFlrSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(OnestFlrSF::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum TwondFlrSF {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for TwondFlrSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(TwondFlrSF::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -408,10 +543,28 @@ enum LowQualFinSF {
     Null,
 }
 
+impl std::str::FromStr for LowQualFinSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(LowQualFinSF::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum GrLivArea {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for GrLivArea {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(GrLivArea::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -420,10 +573,28 @@ enum BsmtFullBath {
     Null,
 }
 
+impl std::str::FromStr for BsmtFullBath {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(BsmtFullBath::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum BsmtHalfBath {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for BsmtHalfBath {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(BsmtHalfBath::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -432,10 +603,28 @@ enum FullBath {
     Null,
 }
 
+impl std::str::FromStr for FullBath {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(FullBath::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum HalfBath {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for HalfBath {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(HalfBath::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -444,10 +633,28 @@ enum BedroomAbvGr {
     Null,
 }
 
+impl std::str::FromStr for BedroomAbvGr {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(BedroomAbvGr::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum KitchenAbvGr {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for KitchenAbvGr {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(KitchenAbvGr::Int(i))
+    }
 }
 
 create_enum!(KitchenQual;
@@ -462,6 +669,15 @@ Null,
 enum TotRmsAbvGrd {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for TotRmsAbvGrd {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(TotRmsAbvGrd::Int(i))
+    }
 }
 
 create_enum!(Functional;
@@ -479,6 +695,15 @@ Null,
 enum Fireplaces {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for Fireplaces {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(Fireplaces::Int(i))
+    }
 }
 
 create_enum!(FireplaceQu;
@@ -506,6 +731,15 @@ enum GarageYrBlt {
     Null,
 }
 
+impl std::str::FromStr for GarageYrBlt {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(GarageYrBlt::Int(i))
+    }
+}
+
 create_enum!(GarageFinish;
 "Fin" => Fin,
 "RFn" => RFn,
@@ -519,10 +753,28 @@ enum GarageCars {
     Null,
 }
 
+impl std::str::FromStr for GarageCars {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(GarageCars::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum GarageArea {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for GarageArea {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(GarageArea::Int(i))
+    }
 }
 
 create_enum!(GarageQual;
@@ -556,10 +808,28 @@ enum WoodDeckSF {
     Null,
 }
 
+impl std::str::FromStr for WoodDeckSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(WoodDeckSF::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum OpenPorchSF {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for OpenPorchSF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(OpenPorchSF::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -568,10 +838,28 @@ enum EnclosedPorch {
     Null,
 }
 
+impl std::str::FromStr for EnclosedPorch {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(EnclosedPorch::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum ThreeSsnPorch {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for ThreeSsnPorch {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(ThreeSsnPorch::Int(i))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -580,10 +868,28 @@ enum ScreenPorch {
     Null,
 }
 
+impl std::str::FromStr for ScreenPorch {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(ScreenPorch::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum PoolArea {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for PoolArea {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(PoolArea::Int(i))
+    }
 }
 
 create_enum!(PoolQC;
@@ -615,16 +921,43 @@ enum MiscVal {
     Null,
 }
 
+impl std::str::FromStr for MiscVal {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(MiscVal::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum MoSold {
     Int(i64),
     Null,
 }
 
+impl std::str::FromStr for MoSold {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(MoSold::Int(i))
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum YrSold {
     Int(i64),
     Null,
+}
+
+impl std::str::FromStr for YrSold {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(YrSold::Int(i))
+    }
 }
 
 create_enum!(SaleType;
@@ -656,7 +989,16 @@ enum SalePrice {
     Null,
 }
 
-enum CsvColumns {
+impl std::str::FromStr for SalePrice {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let i = s.parse::<i64>().unwrap();
+        Ok(SalePrice::Int(i))
+    }
+}
+
+enum CsvColumn {
     Id,
     MSSubClass,
     MSZoning,
@@ -740,96 +1082,97 @@ enum CsvColumns {
     SalePrice,
 }
 
-impl std::str::FromStr for CsvColumns {
+impl std::str::FromStr for CsvColumn {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Id" => Ok(CsvColumns::Id),
-            "MSSubClass" => Ok(CsvColumns::MSSubClass),
-            "MSZoning" => Ok(CsvColumns::MSZoning),
-            "LotFrontage" => Ok(CsvColumns::LotFrontage),
-            "LotArea" => Ok(CsvColumns::LotArea),
-            "Street" => Ok(CsvColumns::Street),
-            "Alley" => Ok(CsvColumns::Alley),
-            "LotShape" => Ok(CsvColumns::LotShape),
-            "LandContour" => Ok(CsvColumns::LandContour),
-            "Utilities" => Ok(CsvColumns::Utilities),
-            "LotConfig" => Ok(CsvColumns::LotConfig),
-            "LandSlope" => Ok(CsvColumns::LandSlope),
-            "Neighborhood" => Ok(CsvColumns::Neighborhood),
-            "Condition1" => Ok(CsvColumns::ConditionOne),
-            "Condition2" => Ok(CsvColumns::ConditionTwo),
-            "BldgType" => Ok(CsvColumns::BldgType),
-            "HouseStyle" => Ok(CsvColumns::HouseStyle),
-            "OverallQual" => Ok(CsvColumns::OverallQual),
-            "OverallCond" => Ok(CsvColumns::OverallCond),
-            "YearBuilt" => Ok(CsvColumns::YearBuilt),
-            "YearRemodAdd" => Ok(CsvColumns::YearRemodAdd),
-            "RoofStyle" => Ok(CsvColumns::RoofStyle),
-            "RoofMatl" => Ok(CsvColumns::RoofMatl),
-            "Exterior1st" => Ok(CsvColumns::ExteriorOnest),
-            "Exterior2nd" => Ok(CsvColumns::ExteriorTwond),
-            "MasVnrType" => Ok(CsvColumns::MasVnrType),
-            "MasVnrArea" => Ok(CsvColumns::MasVnrArea),
-            "ExterQual" => Ok(CsvColumns::ExterQual),
-            "ExterCond" => Ok(CsvColumns::ExterCond),
-            "Foundation" => Ok(CsvColumns::Foundation),
-            "BsmtQual" => Ok(CsvColumns::BsmtQual),
-            "BsmtCond" => Ok(CsvColumns::BsmtCond),
-            "BsmtExposure" => Ok(CsvColumns::BsmtExposure),
-            "BsmtFinType1" => Ok(CsvColumns::BsmtFinTypeOne),
-            "BsmtFinSF1" => Ok(CsvColumns::BsmtFinSFOne),
-            "BsmtFinType2" => Ok(CsvColumns::BsmtFinTypeTwo),
-            "BsmtFinSF2" => Ok(CsvColumns::BsmtFinSFTwo),
-            "BsmtUnfSF" => Ok(CsvColumns::BsmtUnfSF),
-            "TotalBsmtSF" => Ok(CsvColumns::TotalBsmtSF),
-            "Heating" => Ok(CsvColumns::Heating),
-            "HeatingQC" => Ok(CsvColumns::HeatingQC),
-            "CentralAir" => Ok(CsvColumns::CentralAir),
-            "Electrical" => Ok(CsvColumns::Electrical),
-            "1stFlrSF" => Ok(CsvColumns::OnestFlrSF),
-            "2ndFlrSF" => Ok(CsvColumns::TwondFlrSF),
-            "LowQualFinSF" => Ok(CsvColumns::LowQualFinSF),
-            "GrLivArea" => Ok(CsvColumns::GrLivArea),
-            "BsmtFullBath" => Ok(CsvColumns::BsmtFullBath),
-            "BsmtHalfBath" => Ok(CsvColumns::BsmtHalfBath),
-            "FullBath" => Ok(CsvColumns::FullBath),
-            "HalfBath" => Ok(CsvColumns::HalfBath),
-            "BedroomAbvGr" => Ok(CsvColumns::BedroomAbvGr),
-            "KitchenAbvGr" => Ok(CsvColumns::KitchenAbvGr),
-            "KitchenQual" => Ok(CsvColumns::KitchenQual),
-            "TotRmsAbvGrd" => Ok(CsvColumns::TotRmsAbvGrd),
-            "Functional" => Ok(CsvColumns::Functional),
-            "Fireplaces" => Ok(CsvColumns::Fireplaces),
-            "FireplaceQu" => Ok(CsvColumns::FireplaceQu),
-            "GarageType" => Ok(CsvColumns::GarageType),
-            "GarageYrBlt" => Ok(CsvColumns::GarageYrBlt),
-            "GarageFinish" => Ok(CsvColumns::GarageFinish),
-            "GarageCars" => Ok(CsvColumns::GarageCars),
-            "GarageArea" => Ok(CsvColumns::GarageArea),
-            "GarageQual" => Ok(CsvColumns::GarageQual),
-            "GarageCond" => Ok(CsvColumns::GarageCond),
-            "PavedDrive" => Ok(CsvColumns::PavedDrive),
-            "WoodDeckSF" => Ok(CsvColumns::WoodDeckSF),
-            "OpenPorchSF" => Ok(CsvColumns::OpenPorchSF),
-            "EnclosedPorch" => Ok(CsvColumns::EnclosedPorch),
-            "3SsnPorch" => Ok(CsvColumns::ThreeSsnPorch),
-            "ScreenPorch" => Ok(CsvColumns::ScreenPorch),
-            "PoolArea" => Ok(CsvColumns::PoolArea),
-            "PoolQC" => Ok(CsvColumns::PoolQC),
-            "Fence" => Ok(CsvColumns::Fence),
-            "MiscFeature" => Ok(CsvColumns::MiscFeature),
-            "MiscVal" => Ok(CsvColumns::MiscVal),
-            "MoSold" => Ok(CsvColumns::MoSold),
-            "YrSold" => Ok(CsvColumns::YrSold),
-            "SaleType" => Ok(CsvColumns::SaleType),
-            "SaleCondition" => Ok(CsvColumns::SaleCondition),
-            "SalePrice" => Ok(CsvColumns::SalePrice),
+            "Id" => Ok(CsvColumn::Id),
+            "MSSubClass" => Ok(CsvColumn::MSSubClass),
+            "MSZoning" => Ok(CsvColumn::MSZoning),
+            "LotFrontage" => Ok(CsvColumn::LotFrontage),
+            "LotArea" => Ok(CsvColumn::LotArea),
+            "Street" => Ok(CsvColumn::Street),
+            "Alley" => Ok(CsvColumn::Alley),
+            "LotShape" => Ok(CsvColumn::LotShape),
+            "LandContour" => Ok(CsvColumn::LandContour),
+            "Utilities" => Ok(CsvColumn::Utilities),
+            "LotConfig" => Ok(CsvColumn::LotConfig),
+            "LandSlope" => Ok(CsvColumn::LandSlope),
+            "Neighborhood" => Ok(CsvColumn::Neighborhood),
+            "Condition1" => Ok(CsvColumn::ConditionOne),
+            "Condition2" => Ok(CsvColumn::ConditionTwo),
+            "BldgType" => Ok(CsvColumn::BldgType),
+            "HouseStyle" => Ok(CsvColumn::HouseStyle),
+            "OverallQual" => Ok(CsvColumn::OverallQual),
+            "OverallCond" => Ok(CsvColumn::OverallCond),
+            "YearBuilt" => Ok(CsvColumn::YearBuilt),
+            "YearRemodAdd" => Ok(CsvColumn::YearRemodAdd),
+            "RoofStyle" => Ok(CsvColumn::RoofStyle),
+            "RoofMatl" => Ok(CsvColumn::RoofMatl),
+            "Exterior1st" => Ok(CsvColumn::ExteriorOnest),
+            "Exterior2nd" => Ok(CsvColumn::ExteriorTwond),
+            "MasVnrType" => Ok(CsvColumn::MasVnrType),
+            "MasVnrArea" => Ok(CsvColumn::MasVnrArea),
+            "ExterQual" => Ok(CsvColumn::ExterQual),
+            "ExterCond" => Ok(CsvColumn::ExterCond),
+            "Foundation" => Ok(CsvColumn::Foundation),
+            "BsmtQual" => Ok(CsvColumn::BsmtQual),
+            "BsmtCond" => Ok(CsvColumn::BsmtCond),
+            "BsmtExposure" => Ok(CsvColumn::BsmtExposure),
+            "BsmtFinType1" => Ok(CsvColumn::BsmtFinTypeOne),
+            "BsmtFinSF1" => Ok(CsvColumn::BsmtFinSFOne),
+            "BsmtFinType2" => Ok(CsvColumn::BsmtFinTypeTwo),
+            "BsmtFinSF2" => Ok(CsvColumn::BsmtFinSFTwo),
+            "BsmtUnfSF" => Ok(CsvColumn::BsmtUnfSF),
+            "TotalBsmtSF" => Ok(CsvColumn::TotalBsmtSF),
+            "Heating" => Ok(CsvColumn::Heating),
+            "HeatingQC" => Ok(CsvColumn::HeatingQC),
+            "CentralAir" => Ok(CsvColumn::CentralAir),
+            "Electrical" => Ok(CsvColumn::Electrical),
+            "1stFlrSF" => Ok(CsvColumn::OnestFlrSF),
+            "2ndFlrSF" => Ok(CsvColumn::TwondFlrSF),
+            "LowQualFinSF" => Ok(CsvColumn::LowQualFinSF),
+            "GrLivArea" => Ok(CsvColumn::GrLivArea),
+            "BsmtFullBath" => Ok(CsvColumn::BsmtFullBath),
+            "BsmtHalfBath" => Ok(CsvColumn::BsmtHalfBath),
+            "FullBath" => Ok(CsvColumn::FullBath),
+            "HalfBath" => Ok(CsvColumn::HalfBath),
+            "BedroomAbvGr" => Ok(CsvColumn::BedroomAbvGr),
+            "KitchenAbvGr" => Ok(CsvColumn::KitchenAbvGr),
+            "KitchenQual" => Ok(CsvColumn::KitchenQual),
+            "TotRmsAbvGrd" => Ok(CsvColumn::TotRmsAbvGrd),
+            "Functional" => Ok(CsvColumn::Functional),
+            "Fireplaces" => Ok(CsvColumn::Fireplaces),
+            "FireplaceQu" => Ok(CsvColumn::FireplaceQu),
+            "GarageType" => Ok(CsvColumn::GarageType),
+            "GarageYrBlt" => Ok(CsvColumn::GarageYrBlt),
+            "GarageFinish" => Ok(CsvColumn::GarageFinish),
+            "GarageCars" => Ok(CsvColumn::GarageCars),
+            "GarageArea" => Ok(CsvColumn::GarageArea),
+            "GarageQual" => Ok(CsvColumn::GarageQual),
+            "GarageCond" => Ok(CsvColumn::GarageCond),
+            "PavedDrive" => Ok(CsvColumn::PavedDrive),
+            "WoodDeckSF" => Ok(CsvColumn::WoodDeckSF),
+            "OpenPorchSF" => Ok(CsvColumn::OpenPorchSF),
+            "EnclosedPorch" => Ok(CsvColumn::EnclosedPorch),
+            "3SsnPorch" => Ok(CsvColumn::ThreeSsnPorch),
+            "ScreenPorch" => Ok(CsvColumn::ScreenPorch),
+            "PoolArea" => Ok(CsvColumn::PoolArea),
+            "PoolQC" => Ok(CsvColumn::PoolQC),
+            "Fence" => Ok(CsvColumn::Fence),
+            "MiscFeature" => Ok(CsvColumn::MiscFeature),
+            "MiscVal" => Ok(CsvColumn::MiscVal),
+            "MoSold" => Ok(CsvColumn::MoSold),
+            "YrSold" => Ok(CsvColumn::YrSold),
+            "SaleType" => Ok(CsvColumn::SaleType),
+            "SaleCondition" => Ok(CsvColumn::SaleCondition),
+            "SalePrice" => Ok(CsvColumn::SalePrice),
             _ => Err(format!("Unknown string: '{}'", s)),
         }
     }
 }
 pub struct CsvDataFrame {
+    columns: Vec<CsvColumn>,
     Id: Vec<Id>,
     MSSubClass: Vec<MSSubClass>,
     MSZoning: Vec<MSZoning>,
@@ -914,29 +1257,25 @@ pub struct CsvDataFrame {
 }
 
 impl CsvDataFrame {
-    fn new(dataset: &mut CsvDataset) -> Self {
-        let Id = dataset.values.pop().unwrap().into_iter().map(|id|{
-            match id {
+    fn new(dataset: &mut csv_deserializer::CsvDataset) -> Self {
+        let Id = dataset
+            .values
+            .pop()
+            .unwrap()
+            .into_iter()
+            .map(|id| match id {
                 csv_deserializer::CsvAny::Int(i) => Id::Int(i),
                 csv_deserializer::CsvAny::Null => Id::Null,
-                _ => panic!()
-            }
-        }).collect::<Vec<Id>>();
-        
-        dataset
-            .raw_names
+                _ => panic!(),
+            })
+            .collect::<Vec<Id>>();
+
+        let columns: Vec<CsvColumn> = dataset
+            .names
             .iter()
             .enumerate()
-            .map(|(col_index, name)| match CsvColumns::from_str(name){
-                Ok(csv_col) => {
-                    let k = &dataset.values[col_index].iter().map(|value|{
-                        
-                    });
-                },
-                Err(err) => panic!("{err}"),
-            });
-
-
+            .filter_map(|(col_index, name)| CsvColumn::from_str(&name.raw).ok())
+            .collect();
 
         todo!()
     }

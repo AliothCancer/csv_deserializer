@@ -1,5 +1,5 @@
-// mod csv_types;
-// use csv_types::*;
+mod csv_types;
+use csv_types::*;
 
 use std::{error::Error, fs::File};
 
@@ -12,9 +12,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         .has_headers(true)
         .from_reader(file);
 
-    let dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
+    let mut dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
     
-    let enums = generate_enums_from(&dataset);
+    let enums = generate_enums_from(&mut dataset);
     let struc = gen_struct(&dataset);
     println!("#![allow(unused,non_snake_case)]\nuse csv_deserializer::create_enum;
 \n{}\n{}", enums, struc);

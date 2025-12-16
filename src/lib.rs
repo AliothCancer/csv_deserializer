@@ -9,22 +9,35 @@ use std::io;
 
 use csv::Reader;
 
-use crate::sanitizer::sanitize_identifier;
+use crate::{dataset_info::ColumnInfo, sanitizer::sanitize_identifier};
+
+
+pub const COLUMN_TYPE_ENUM_NAME: &str= "CsvColumn";
+
 
 #[derive(Debug)]
 pub struct CsvDataset {
     pub names: Vec<ColName>,
     pub values: Vec<Vec<CsvAny>>,
     pub null_values: NullValues,
+    pub info: Vec<ColumnInfo>
 }
-#[derive(Debug)]
+
+#[derive(Debug,Clone, Copy)]
+pub struct ValueNamesView<'a>{
+    values: &'a [Vec<CsvAny>],
+    names: &'a [ColName]
+}
+
+
+#[derive(Debug, Clone)]
 pub struct ColName{
     pub raw: String,
     pub sanitized: SanitizedStr
 }
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct SanitizedStr(String);
 
 #[derive(Debug)]
@@ -52,7 +65,11 @@ impl CsvDataset {
             names,
             values,
             null_values,
+            info: Vec::new(),
         }
+    }
+    fn view_names_and_values(&self) -> ValueNamesView<'_>{
+        ValueNamesView { values: &self.values, names: &self.names }
     }
 }
 

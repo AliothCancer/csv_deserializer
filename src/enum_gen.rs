@@ -1,4 +1,4 @@
-use crate::{ColName, CsvAny, CsvDataset, SanitizedStr, dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
+use crate::{COLUMN_TYPE_ENUM_NAME, ColName, CsvAny, CsvDataset, SanitizedStr, dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
 
 
 #[macro_export]
@@ -66,22 +66,29 @@ macro_rules! create_enum {
 }
 
 
-pub fn generate_enums_from(dataset: &CsvDataset) -> String{
+pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
     
     let mut full_string = String::new();
 
-    let col_name_iter = dataset.names.iter();
-    let enums = col_name_iter.clone().map(|col_name| {
-        let mut col_metrics = ColumnInfo::new(dataset, &col_name.raw);
+    // I cloned because I need CsvDataset as mutable
+    // to populate the field `info:Vec<ColumnInfo>`
+    // but I also need a reference to `names` (another field of itself)
+    let col_name = &dataset.names;
+    
+    let enums = col_name.iter().map(|col_name| {
+        let mut col_info = ColumnInfo::new(&dataset.names, &dataset.values, &col_name.raw);
 
-        if !col_metrics.unique_values.iter().any(|x| x.csvany == CsvAny::Null){
+
+        if !col_info.unique_values.iter().any(|x| x.csvany == CsvAny::Null){
             let str = String::from("Null");
-            col_metrics.unique_values.push(Variant{ raw: str.clone(), sanitized: str, csvany: CsvAny::Null});
+            col_info.unique_values.push(Variant{ raw: str.clone(), sanitized: str, csvany: CsvAny::Null});
         }
 
+        dataset.info.push(col_info.clone());
         
-        let unique_val_iter = col_metrics.unique_values.iter();
+        let unique_val_iter = col_info.unique_values.iter();
 
+        
         let is_str = unique_val_iter.clone().all(|x| {
             matches!(x.csvany, CsvAny::Str(_) | CsvAny::Empty | CsvAny::Null)
         });
@@ -106,24 +113,24 @@ pub fn generate_enums_from(dataset: &CsvDataset) -> String{
         
     } + "\n\n").collect::<String>();
 
-    let csv_columns_enum_name = "CsvColumns";
-    let mut columns_enum = format!("enum {csv_columns_enum_name}{{\n");
+    
+    let mut columns_enum = format!("enum {COLUMN_TYPE_ENUM_NAME}{{\n");
 
-    col_name_iter.clone().for_each(|col_name|{
+    col_name.iter().for_each(|col_name|{
         columns_enum.push_str(&format!("{},\n", col_name.sanitized.0));
     });
     columns_enum.push_str("}\n\n");
 
     let mut columns_enum_from_str = format!("\
-impl std::str::FromStr for {csv_columns_enum_name}{{
+impl std::str::FromStr for {COLUMN_TYPE_ENUM_NAME}{{
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {{ 
         match s{{
 ");
-    col_name_iter.for_each(|col_name|{
+    col_name.iter().for_each(|col_name|{
         let ColName{raw, sanitized} = col_name;
         let SanitizedStr(sanitized) = sanitized; 
-        columns_enum_from_str.push_str(&format!("\t\t\t\"{raw}\" => Ok({csv_columns_enum_name}::{sanitized}),\n"));
+        columns_enum_from_str.push_str(&format!("\t\t\t\"{raw}\" => Ok({COLUMN_TYPE_ENUM_NAME}::{sanitized}),\n"));
     });
     // last case
     columns_enum_from_str.push_str("_ => Err(format!(\"Unknown string: '{}'\", s)),\n");
@@ -148,15 +155,34 @@ fn gen_str_enum<'a>(col_name: &ColName, unique_values: impl Iterator<Item = &'a 
         format!("create_enum!({};\n{variants});", col_name.sanitized.0)
 }
 fn gen_float_enum(col_name: &ColName) -> String {
+    let name = &col_name.sanitized.0;
     format!("
     #[derive(Debug, Clone, Copy, PartialEq)]
-    enum {} {{ Float(f64), Null }}
-    ", col_name.sanitized.0)
+    enum {name} {{ Float(f64), Null }}
+
+    impl std::str::FromStr for {name}{{
+        type Err = String;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {{ 
+            let f = s.parse::<f64>().unwrap();
+            Ok({name}::Float(f))
+        }}
+    }}")
 }
 
 fn gen_int_enum(col_name: &ColName) -> String {
+    let name = &col_name.sanitized.0;
     format!("
     #[derive(Debug, Clone, Copy, PartialEq)]
-    enum {} {{ Int(i64), Null }}
-    ", col_name.sanitized.0)
+    enum {name} {{ Int(i64), Null }}
+
+    impl std::str::FromStr for {name}{{
+        type Err = String;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {{ 
+            let i = s.parse::<i64>().unwrap();
+            Ok({name}::Int(i))
+        }}
+    }}
+    ")
 }
