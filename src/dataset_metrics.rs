@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use itertools::Itertools;
 
-use crate::{CsvAny, CsvColumn, CsvDataset};
+use crate::{CsvAny, CsvDataset};
 
 pub struct ColumnMetrics {
     pub column_name: String,
@@ -16,30 +16,20 @@ pub struct ColumnMetrics {
 
 impl ColumnMetrics {
     pub fn new(dataset: &CsvDataset, column_name: &str) -> Self {
-        let (index, column_name) = dataset
+        let (column_index, column_name) = dataset
             .names
             .iter()
             .enumerate()
             .find(|(_, x)| column_name.contains(x.as_str()))
             .unwrap_or_else(|| panic!("No column named {column_name} found!"));
-
+        
         let mut number_of_empties = 0;
         let mut number_of_nulls: u32 = 0;
         let mut number_of_strings: u32 = 0;
         let mut number_of_floats: u32 = 0;
         let mut number_of_ints: u32 = 0;
 
-        let mut values: Vec<&CsvAny> = dataset
-            .values
-            .iter()
-            .map(|x| {
-                if let CsvColumn::AnyColumn(x) = x {
-                    &x[index]
-                } else {
-                    unimplemented!()
-                }
-            })
-            .collect();
+        let mut values: Vec<&CsvAny> = dataset.values[column_index].iter().collect();
         values.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         let unique_values = values

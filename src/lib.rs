@@ -1,6 +1,6 @@
 pub mod dataset_metrics;
 
-#[macro_use]
+pub mod struct_gen;
 pub mod enum_gen;
 
 pub mod enum_sanitizer;
@@ -12,37 +12,28 @@ use csv::Reader;
 #[derive(Debug)]
 pub struct CsvDataset {
     pub names: Vec<String>,
-    pub values: Vec<CsvColumn>,
+    pub values: Vec<Vec<CsvAny>>,
     pub null_values: NullValues,
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub enum CsvColumn {
-    IntColumn(Vec<CsvInt>),
-    FloatColumn(Vec<CsvFloat>),
-    StringColumn(Vec<CsvString>),
-    AnyColumn(Vec<CsvAny>),
-}
 
 #[derive(Debug)]
 pub struct NullValues(pub &'static [&'static str]);
 
 impl CsvDataset {
     pub fn new<R: io::Read>(mut reader: Reader<R>, null_values: NullValues) -> Self {
-        let names = reader.headers().unwrap().iter().map(String::from).collect();
+        let names: Vec<String> = reader.headers().unwrap().iter().map(String::from).collect();
 
-        let values = reader
-            .into_records()
-            .map(|x| {
-                let csv_col = x
-                    .unwrap()
-                    .iter()
-                    .map(|value| RawCsvValue(value).as_csvany(&null_values))
-                    .collect::<Vec<_>>();
-
-                CsvColumn::AnyColumn(csv_col)
-            })
-            .collect::<Vec<_>>();
+        let mut values: Vec<Vec<CsvAny>> = (0..names.len()).map(|_|Vec::new()).collect();
+        reader.into_records().for_each(|x| {
+            x.unwrap()
+                .iter()
+                .enumerate()
+                .for_each(|(column_index, value)| {
+                    let k = values.get_mut(column_index).unwrap();
+                    k.push(RawCsvValue(value).as_csvany(&null_values));
+                })
+        });
 
         Self {
             names,
@@ -84,73 +75,82 @@ pub enum CsvAny {
     Empty, // if it is just empty
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
-pub enum CsvInt {
-    Int(i64),
-    Empty,
-    Null,
-}
+// I was thinking about this alternative but
+// it make it more complex
+// #[derive(Debug, PartialEq, PartialOrd, Clone)]
+// pub enum CsvInt {
+//     Int(i64),
+//     Empty,
+//     Null,
+// }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
-pub enum CsvFloat {
-    Float(f64),
-    Empty,
-    Null,
-}
+// #[derive(Debug, PartialEq, Clone)]
+// pub enum CsvColumn {
+//     IntColumn(Vec<CsvInt>),
+//     FloatColumn(Vec<CsvFloat>),
+//     StringColumn(Vec<CsvString>),
+//     AnyColumn(Vec<CsvAny>),
+// }
+// #[derive(Debug, PartialEq, PartialOrd, Clone)]
+// pub enum CsvFloat {
+//     Float(f64),
+//     Empty,
+//     Null,
+// }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
-pub enum CsvString {
-    Str(String),
-    Empty,
-    Null,
-}
+// #[derive(Debug, PartialEq, PartialOrd, Clone)]
+// pub enum CsvString {
+//     Str(String),
+//     Empty,
+//     Null,
+// }
 
-use std::convert::TryFrom;
+// use std::convert::TryFrom;
 
-impl TryFrom<CsvAny> for CsvInt {
-    type Error = String;
+// impl TryFrom<CsvAny> for CsvInt {
+//     type Error = String;
 
-    fn try_from(value: CsvAny) -> Result<Self, Self::Error> {
-        match value {
-            CsvAny::Int(i) => Ok(CsvInt::Int(i)),
-            CsvAny::Empty => Ok(CsvInt::Empty),
-            CsvAny::Null => Ok(CsvInt::Null),
-            _ => Err(format!(
-                "Type Mismatch: Cannot convert {:?} to CsvInt",
-                value
-            )),
-        }
-    }
-}
+//     fn try_from(value: CsvAny) -> Result<Self, Self::Error> {
+//         match value {
+//             CsvAny::Int(i) => Ok(CsvInt::Int(i)),
+//             CsvAny::Empty => Ok(CsvInt::Empty),
+//             CsvAny::Null => Ok(CsvInt::Null),
+//             _ => Err(format!(
+//                 "Type Mismatch: Cannot convert {:?} to CsvInt",
+//                 value
+//             )),
+//         }
+//     }
+// }
 
-impl TryFrom<CsvAny> for CsvFloat {
-    type Error = String;
+// impl TryFrom<CsvAny> for CsvFloat {
+//     type Error = String;
 
-    fn try_from(value: CsvAny) -> Result<Self, Self::Error> {
-        match value {
-            CsvAny::Float(f) => Ok(CsvFloat::Float(f)),
-            CsvAny::Empty => Ok(CsvFloat::Empty),
-            CsvAny::Null => Ok(CsvFloat::Null),
-            _ => Err(format!(
-                "Type Mismatch: Cannot convert {:?} to CsvFloat",
-                value
-            )),
-        }
-    }
-}
+//     fn try_from(value: CsvAny) -> Result<Self, Self::Error> {
+//         match value {
+//             CsvAny::Float(f) => Ok(CsvFloat::Float(f)),
+//             CsvAny::Empty => Ok(CsvFloat::Empty),
+//             CsvAny::Null => Ok(CsvFloat::Null),
+//             _ => Err(format!(
+//                 "Type Mismatch: Cannot convert {:?} to CsvFloat",
+//                 value
+//             )),
+//         }
+//     }
+// }
 
-impl TryFrom<CsvAny> for CsvString {
-    type Error = String;
+// impl TryFrom<CsvAny> for CsvString {
+//     type Error = String;
 
-    fn try_from(value: CsvAny) -> Result<Self, Self::Error> {
-        match value {
-            CsvAny::Str(s) => Ok(CsvString::Str(s)),
-            CsvAny::Empty => Ok(CsvString::Empty),
-            CsvAny::Null => Ok(CsvString::Null),
-            _ => Err(format!(
-                "Type Mismatch: Cannot convert {:?} to CsvString",
-                value
-            )),
-        }
-    }
-}
+//     fn try_from(value: CsvAny) -> Result<Self, Self::Error> {
+//         match value {
+//             CsvAny::Str(s) => Ok(CsvString::Str(s)),
+//             CsvAny::Empty => Ok(CsvString::Empty),
+//             CsvAny::Null => Ok(CsvString::Null),
+//             _ => Err(format!(
+//                 "Type Mismatch: Cannot convert {:?} to CsvString",
+//                 value
+//             )),
+//         }
+//     }
+// }

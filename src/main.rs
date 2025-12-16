@@ -1,12 +1,9 @@
-#[macro_use]
-mod enum_gen;
+mod csv_types;
+use csv_types::*;
 
 use std::{error::Error, fs::File};
 
-use csv_deserializer::{
-    CsvDataset, CsvAny, NullValues, dataset_metrics::ColumnMetrics,
-    enum_sanitizer::sanitize_identifier,
-};
+use csv_deserializer::{CsvDataset, NullValues, create_enum, enum_gen::generate_enums_from};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let path = "train.csv";
@@ -16,27 +13,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         .from_reader(file);
 
     let dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
-
-    dataset.names.iter().skip(2).take(1).for_each(|name| {
-        let col_metrics = ColumnMetrics::new(&dataset, name);
-
-        let name = sanitize_identifier(name);
-
-        let variants = col_metrics
-            .unique_values
-            .iter()
-            .map(|var| match var {
-                CsvAny::Int(int) => sanitize_identifier(&int.to_string()),
-                CsvAny::Str(str) => format!("\"{}\" => {}", str, sanitize_identifier(str)),
-                CsvAny::Empty => "Empty".to_string(),
-                CsvAny::Null => "Null".to_string(),
-                CsvAny::Float(_) => panic!("Should not be used on float"),
-            } + ",\n")
-            .collect::<String>();
-        println!("create_enum!({};\n{})", name, variants);
-    });
+    
+    let enums = generate_enums_from(&dataset);
+    println!("#![allow(unused)]\nuse csv_deserializer::create_enum;
+\n{}", enums);
     Ok(())
 }
+
 create_enum!(MyEnum;
     "ciao" | "hallo" => Ciao,
     "How" | "come" => Come,
