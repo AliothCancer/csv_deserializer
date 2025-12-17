@@ -9,24 +9,20 @@ use std::io;
 
 use csv::Reader;
 
-use crate::{dataset_info::ColumnInfo, enum_gen::generate_enums_from, sanitizer::sanitize_identifier, struct_gen::gen_struct};
+use crate::{dataset_info::ColumnInfo, sanitizer::sanitize_identifier};
 
 pub const COLUMN_TYPE_ENUM_NAME: &str = "CsvColumn";
+pub const MAIN_STRUCT_NAME: &str = "CsvDataFrame";
 
-
-/// Print to stdout the code generation for the provided CsvDataset
-pub fn print_csv_rust_code(dataset: &mut CsvDataset) {
-    let enums = generate_enums_from(dataset);
-    let struc = gen_struct(dataset);
-    println!("#![allow(unused,non_snake_case)]\nuse csv_deserializer::create_enum;\nuse std::str::FromStr;
-    \n{}\n{}", enums, struc);
-}
-
+/// This is a form to represent the dataset
+/// which does not deep typization but can still
+/// be usefull, also info field holds some info about the
+/// types for each column
 #[derive(Debug)]
-pub struct CsvDataset {
+pub struct CsvDataset<'a> {
     pub names: Vec<ColName>,
     pub values: Vec<Vec<CsvAny>>,
-    pub null_values: NullValues,
+    pub null_values: NullValues<'a>,
     pub info: Vec<ColumnInfo>,
 }
 
@@ -46,10 +42,10 @@ pub struct ColName {
 pub struct SanitizedStr(pub String);
 
 #[derive(Debug)]
-pub struct NullValues(pub &'static [&'static str]);
+pub struct NullValues<'a>(pub Vec<&'a str>);
 
-impl CsvDataset {
-    pub fn new<R: io::Read>(mut reader: Reader<R>, null_values: NullValues) -> Self {
+impl<'a> CsvDataset<'a> {
+    pub fn new<R: io::Read>(mut reader: Reader<R>, null_values: NullValues<'a>) -> Self {
         let names: Vec<ColName> = reader
             .headers()
             .unwrap()

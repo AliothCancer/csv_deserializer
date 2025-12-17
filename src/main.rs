@@ -1,32 +1,95 @@
-mod csv_types;
-use csv_types::*;
+// mod csv_types;
+// use csv_types::*;
 
-use std::{error::Error, fs::File};
 
-use csv_deserializer::{CsvDataset, NullValues, create_enum, enum_gen::generate_enums_from, print_csv_rust_code, struct_gen::gen_struct};
+use clap::Parser;
+
+use std::{error::Error, fmt, fs::File, path::PathBuf};
+
+use csv_deserializer::{
+    CsvDataset, NullValues, enum_gen::generate_enums_from, struct_gen::gen_struct,
+};
+
+/// Print to stdout the code generation for the provided CsvDataset
+fn print_csv_rust_code(dataset: &mut CsvDataset) {
+    let enums = generate_enums_from(dataset);
+    let struc = gen_struct(dataset);
+    println!("#![allow(unused,non_snake_case,non_camel_case_types)]\nuse csv_deserializer::create_enum;\nuse std::str::FromStr;
+    \n{}\n{}", enums, struc);
+}
+
+#[derive(Parser)]
+#[command(author = "AliothCancer", version)]
+#[derive(Debug)]
+struct Cli {
+    #[arg(short = 'i', long = "input-file", value_name = "input_file", value_parser=custom_csv_path_validator)]
+    input_file: PathBuf,
+    #[arg(short = 'n', long = "null-values", value_name = "a,b,..")]
+    null_values: String
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let path = "train.csv";
-    let file = File::open(path)?;
+    let Cli { input_file, null_values } = Cli::parse();
+    let file = File::open(input_file)?;
     let rdr = csv::ReaderBuilder::new()
         .has_headers(true)
         .from_reader(file);
+    let possible_nulls = null_values.split(',').map(|x|x.trim()).collect::<Vec<&str>>();
 
-    let dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
-    // print_csv_rust_code(&mut dataset);
-    let df = CsvDataFrame::new(dataset);
-    
-    let fv_counter = df.mszoning.iter().filter_map(|x| match x {
-        MSZoning::FV => Some(()),
-        _ => None,
-    }).count();
-    dbg!(fv_counter);
-    
+    let mut dataset = CsvDataset::new(rdr, NullValues(possible_nulls));
+    print_csv_rust_code(&mut dataset);
     Ok(())
 }
 
-create_enum!(MyEnum;
-    "ciao" | "hallo" => Ciao,
-    "How" | "come" => Come,
-    "Aller" | "va" => Va
-);
+
+#[derive(Debug)]
+pub enum LocalCsvError {
+    PathUnreachable(String), // Permission denied, etc.
+    PathNotExists,
+    NotAFile, // Flattens Exist::NotAFile
+    NotACsv,  // Flattens IsFile::NotACsv
+    MissingExtension,
+}
+impl Error for LocalCsvError {}
+
+impl fmt::Display for LocalCsvError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::PathNotExists => write!(f, "The path provided does not exist."),
+            Self::PathUnreachable(e) => write!(f, "System access error: {}", e),
+            Self::NotAFile => write!(
+                f,
+                "The path exists but it is not a file (is it a directory?)."
+            ),
+            Self::NotACsv => write!(f, "The file extension suggests this is not a CSV."),
+            Self::MissingExtension => write!(f, "Extension file is missing, should be .csv"),
+        }
+    }
+}
+
+fn custom_csv_path_validator(path_str: &str) -> Result<PathBuf, LocalCsvError> {
+    let path = PathBuf::from(path_str);
+
+    // 1. Check Existence / Reachability
+    match path.try_exists() {
+        Ok(true) => {} // pass to next checks
+        Ok(false) => return Err(LocalCsvError::PathNotExists),
+        Err(e) => return Err(LocalCsvError::PathUnreachable(e.to_string())),
+    }
+
+    // 2. Check if File
+    if !path.is_file() {
+        return Err(LocalCsvError::NotAFile);
+    }
+
+    // 3. Check Extension
+    if let Some(ext) = path.extension() {
+        if ext != "csv" {
+            Err(LocalCsvError::NotACsv)
+        } else {
+            Ok(path)
+        }
+    } else {
+        Err(LocalCsvError::MissingExtension)
+    }
+}

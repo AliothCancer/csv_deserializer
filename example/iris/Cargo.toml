@@ -1,0 +1,8 @@
+[package]
+name = "iris"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+csv_deserializer.workspace = true
+csv.workspace = true

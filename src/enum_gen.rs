@@ -1,4 +1,4 @@
-use crate::{COLUMN_TYPE_ENUM_NAME, ColName, CsvAny, CsvDataset, SanitizedStr, dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
+use crate::{COLUMN_TYPE_ENUM_NAME,ColName, CsvAny, CsvDataset, dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
 
 
 #[macro_export]
@@ -118,28 +118,16 @@ pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
     let mut columns_enum = format!("#[derive(Debug)]\npub enum {COLUMN_TYPE_ENUM_NAME}{{\n");
 
     col_name.iter().for_each(|col_name|{
-        columns_enum.push_str(&format!("{},\n", col_name.sanitized.0));
+        let sanitized = &col_name.sanitized.0;
+        columns_enum.push_str(&format!("{sanitized}(Vec<{sanitized}>),\n"));
     });
     columns_enum.push_str("}\n\n");
 
-    let mut columns_enum_from_str = format!("\
-impl std::str::FromStr for {COLUMN_TYPE_ENUM_NAME}{{
-    type Err = String;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {{ 
-        match s{{
-");
-    col_name.iter().for_each(|col_name|{
-        let ColName{raw, sanitized} = col_name;
-        let SanitizedStr(sanitized) = sanitized; 
-        columns_enum_from_str.push_str(&format!("\t\t\t\"{raw}\" => Ok({COLUMN_TYPE_ENUM_NAME}::{sanitized}),\n"));
-    });
-    // last case
-    columns_enum_from_str.push_str("_ => Err(format!(\"Unknown string: '{}'\", s)),\n");
-    columns_enum_from_str.push_str("}\n}\n}");
+    
 
     full_string.push_str(&enums);
     full_string.push_str(&columns_enum);
-    full_string.push_str(&columns_enum_from_str);
+    // full_string.push_str(&columns_enum_from_str);
     full_string
 }
 
@@ -158,7 +146,7 @@ fn gen_str_enum<'a>(col_name: &ColName, unique_values: impl Iterator<Item = &'a 
 fn gen_float_enum(col_name: &ColName) -> String {
     let name = &col_name.sanitized.0;
     format!("
-    #[derive(Debug, Clone, Copy, PartialEq)]
+    #[derive(Debug, Clone, Copy, PartialEq,PartialOrd)]
     pub enum {name} {{ Float(f64), Null }}
 
     impl std::str::FromStr for {name}{{
@@ -174,7 +162,7 @@ fn gen_float_enum(col_name: &ColName) -> String {
 fn gen_int_enum(col_name: &ColName) -> String {
     let name = &col_name.sanitized.0;
     format!("
-    #[derive(Debug, Clone, Copy, PartialEq)]
+    #[derive(Debug, Clone, Copy, PartialEq,PartialOrd)]
     pub enum {name} {{ Int(i64), Null }}
 
     impl std::str::FromStr for {name}{{
@@ -187,3 +175,19 @@ fn gen_int_enum(col_name: &ColName) -> String {
     }}
     ")
 }
+
+/*
+let mut columns_enum_from_str = format!("\
+impl std::str::FromStr for {COLUMN_TYPE_ENUM_NAME}{{
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {{ 
+        match s{{
+");
+    col_name.iter().for_each(|col_name|{
+        let ColName{raw, sanitized} = col_name;
+        let SanitizedStr(sanitized) = sanitized; 
+        columns_enum_from_str.push_str(&format!("\t\t\t\"{raw}\" => Ok({COLUMN_TYPE_ENUM_NAME}::{sanitized}),\n"));
+    });
+    // last case
+    columns_enum_from_str.push_str("_ => Err(format!(\"Unknown string: '{}'\", s)),\n");
+    columns_enum_from_str.push_str("}\n}\n}"); */

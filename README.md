@@ -33,7 +33,53 @@ let df = CsvDataFrame::new(dataset);
 ```
 
 ## 4. Iris Dataset ETL Example
-*(Reserved for Iris ETL examples)*
+```rust
+    // Build a reader for the csv file
+    let path = "iris.csv";
+    let file = File::open(path)?;
+    let rdr = csv::ReaderBuilder::new()
+        .has_headers(true)
+        .from_reader(file);
+
+    // builf the CsvDataset with reader and nullvalues
+    let dataset = CsvDataset::new(rdr, NullValues(vec!["NA"]));
+
+    // The iris.rs file is generate with the binary of csv_deserializer
+
+    // Then inside the iris.rs file a CsvDataFrame is used
+    // as the main struct which contains all the data
+    let df = CsvDataFrame::new(&dataset);
+
+    // Do ETL stuffes in a type safe way but it comes at less
+    // flexibility sometimes, so you can always use CsvDataset which
+    // use CsvAny as the type for every cell
+
+    // Can destruct the column wrapper called CsvColumn with if let
+    if let CsvColumn::target(target) = &df.target
+        && let CsvColumn::petal_length_cm(_pet_length) = &df.petal_length_cm
+    {
+        target.iter().for_each(|x| match x {
+            target::Iris_setosa => todo!(),
+            target::Iris_versicolor => todo!(),
+            target::Iris_virginica => todo!(),
+            target::Null => todo!(),
+        });
+    }
+
+    // Can use a list of all columns
+    // make sure to use completion
+    // for match arms
+    for col in df.get_columns() {
+        match col {
+            CsvColumn::sepal_length_cm(sepal_length_cms) => todo!(),
+            CsvColumn::sepal_width_cm(sepal_width_cms) => todo!(),
+            CsvColumn::petal_length_cm(petal_length_cms) => todo!(),
+            CsvColumn::petal_width_cm(petal_width_cms) => todo!(),
+            CsvColumn::target(targets) => todo!(),
+        }
+    }
+
+```
 
 ## 5. Type Recognition: Categorical vs Numerical
 The library identifies types by attempting to parse each raw CSV value.

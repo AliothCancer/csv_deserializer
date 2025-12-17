@@ -18,7 +18,7 @@ pub fn sanitize_identifier(raw: &str) -> String {
 
             // Math & Logic
             '+' => "Plus".into(),
-            '-' => "Minus".into(),
+            '-' => "_".into(),
             '*' => "Star".into(),
             '/' => "Slash".into(),
             '=' => "Equals".into(),
@@ -27,8 +27,8 @@ pub fn sanitize_identifier(raw: &str) -> String {
             '>' => "Gt".into(),
 
             // Wrappers
-            '(' => "OpenParen".into(),
-            ')' => "CloseParen".into(),
+            '(' => "".into(),
+            ')' => "".into(),
             '[' => "OpenBracket".into(),
             ']' => "CloseBracket".into(),
             '{' => "OpenBrace".into(),
@@ -43,7 +43,7 @@ pub fn sanitize_identifier(raw: &str) -> String {
             '!' => "Bang".into(),
             '?' => "Question".into(),
             '~' => "Tilde".into(),
-            ' ' => "Space".into(),
+            ' ' => "_".into(),
 
             // Quotes
             '"' => "Quote".into(),

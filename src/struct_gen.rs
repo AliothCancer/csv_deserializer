@@ -1,5 +1,5 @@
 use crate::{
-    COLUMN_TYPE_ENUM_NAME, ColName, CsvDataset, SanitizedStr,
+    COLUMN_TYPE_ENUM_NAME, ColName, CsvDataset, MAIN_STRUCT_NAME, SanitizedStr,
     dataset_info::{ColumnInfo, Variant},
 };
 
@@ -7,21 +7,49 @@ use crate::{
 /// contains all Vec<T> where T is the generated enums
 /// for each columns
 pub fn gen_struct(dataset: &CsvDataset) -> String {
-    let mut final_str = String::from("pub struct CsvDataFrame{\n");
+    let mut final_str = format!("pub struct {MAIN_STRUCT_NAME}{{\n");
 
-    final_str.push_str(&format!("\tpub columns: Vec<{COLUMN_TYPE_ENUM_NAME}>,\n"));
+    // final_str.push_str(&format!("\tpub columns: Vec<{COLUMN_TYPE_ENUM_NAME}>,\n"));
     dataset.names.iter().for_each(|name| {
         final_str.push_str(&format!(
-            "\tpub {}: Vec<{}>,\n",
-            name.sanitized.0.to_lowercase(), name.sanitized.0
+            "\tpub {}: {},\n",
+            name.sanitized.0.to_lowercase(),
+            COLUMN_TYPE_ENUM_NAME
         ));
     });
     final_str.push('}');
 
+    let impl_str_open = format!(
+        "impl {MAIN_STRUCT_NAME}{{
+"
+    );
     let new_method = gen_new_method(&dataset.names, &dataset.info);
+    let column_list_method = gen_column_list_method(&dataset.names);
+    let impl_str_close = '}';
+
+    final_str.push_str(&impl_str_open);
     final_str.push_str(&new_method);
+    final_str.push_str(&column_list_method);
+    final_str.push(impl_str_close);
 
     final_str
+}
+
+fn gen_column_list_method(col_names: &[ColName]) -> String {
+    let mut number_of_cols = 0;
+    let columns = col_names
+        .iter()
+        .map(|x| {
+            number_of_cols += 1;
+            format!("&self.{},", x.sanitized.0)
+        })
+        .collect::<String>();
+    format!(
+        "\
+    pub fn get_columns(&self)-> [&{COLUMN_TYPE_ENUM_NAME};{number_of_cols}] {{
+        [{columns}]
+    }}"
+    )
 }
 
 fn gen_new_method(col_names: &[ColName], cols_info: &[ColumnInfo]) -> String {
@@ -29,30 +57,20 @@ fn gen_new_method(col_names: &[ColName], cols_info: &[ColumnInfo]) -> String {
         .iter()
         .map(|col_info| gen_vec_of_enums(&col_info.column_name, &col_info.unique_values) + "\n\n")
         .collect::<String>();
-    let fields_list = String::from("columns,\n");
-    let fields_list = fields_list + &col_names
+
+    let fields_list = col_names
         .iter()
         .map(|colname| format!("{},\n\t\t\t", colname.sanitized.0.to_lowercase()))
         .collect::<String>();
     format!(
         "\
-impl CsvDataFrame{{
-
     pub fn new(dataset: csv_deserializer::CsvDataset) -> Self{{
         {vecs_of_enums}
-        
-        let columns: Vec<CsvColumn> = dataset
-            .names
-            .iter()
-            .enumerate()
-            .filter_map(|(col_index, name)| CsvColumn::from_str(&name.raw).ok())
-            .collect();
 
-        CsvDataFrame{{
+        {MAIN_STRUCT_NAME}{{
             {fields_list}
         }}
     }}
-}}
 "
     )
 }
@@ -70,25 +88,31 @@ fn gen_vec_of_enums(col_name: &ColName, unique_values: &[Variant]) -> String {
     let match_arms = unique_values
         .iter()
         .filter_map(|v| match &v.csvany {
-            crate::CsvAny::Str(_) if !str_case_already_written=> {
+            crate::CsvAny::Str(_) if !str_case_already_written => {
                 str_case_already_written = true;
-                Some(format!("csv_deserializer::CsvAny::Str(s) => {sanitized}::from_str(s).unwrap(),\n"))
+                Some(format!(
+                    "csv_deserializer::CsvAny::Str(s) => {sanitized}::from_str(s).unwrap(),\n"
+                ))
             }
             crate::CsvAny::Int(_) if !int_case_already_written => {
                 int_case_already_written = true;
-                Some(format!("csv_deserializer::CsvAny::Int(i) => {sanitized}::Int(*i),\n"))
+                Some(format!(
+                    "csv_deserializer::CsvAny::Int(i) => {sanitized}::Int(*i),\n"
+                ))
             }
             crate::CsvAny::Float(_) if !float_case_already_written => {
                 float_case_already_written = true;
-                Some(format!("csv_deserializer::CsvAny::Float(f) => {sanitized}::Float(*f),\n"))
+                Some(format!(
+                    "csv_deserializer::CsvAny::Float(f) => {sanitized}::Float(*f),\n"
+                ))
             }
-            crate::CsvAny::Null => {
-                Some(format!("csv_deserializer::CsvAny::Null => {sanitized}::Null,\n"))
-            }
-            crate::CsvAny::Empty => {
-                Some(format!("csv_deserializer::CsvAny::Empty => {sanitized}::Null,\n"))
-            }
-            _ => None
+            crate::CsvAny::Null => Some(format!(
+                "csv_deserializer::CsvAny::Null => {sanitized}::Null,\n"
+            )),
+            crate::CsvAny::Empty => Some(format!(
+                "csv_deserializer::CsvAny::Empty => {sanitized}::Null,\n"
+            )),
+            _ => None,
         })
         .collect::<String>();
     format!(
@@ -99,11 +123,10 @@ let (index, _) = dataset
             .enumerate()
             .find(|(index, cl)| &cl.sanitized.0 == \"{sanitized}\")
             .unwrap();
-let {sanitized_lower} = dataset.values[index].iter().map(|val| match val{{
+let {sanitized_lower} = {COLUMN_TYPE_ENUM_NAME}::{sanitized}(dataset.values[index].iter().map(|val| match val{{
     {match_arms}
     _ => panic!(),
-}}).collect::<Vec<{sanitized}>>();
+}}).collect::<Vec<{sanitized}>>());
     "
     )
 }
-
