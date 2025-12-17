@@ -76,7 +76,9 @@ let df = CsvDataFrame::new(dataset);
 
 ```
 
-## 5. Type Recognition: Categorical vs Numerical
+## 5. Name sanitization and Type Recognition: Categorical vs Numerical
+Sanitization is achived converting any number or special char to Strings that will be used in the generated code. In particular the function which does it is contained in sanitizer.rs (`sanitize_identifier`).
+
 The library identifies types by attempting to parse each raw CSV value.
 * **Numerical**: If a value parses as an `i64`, it is treated as an `Int`; if it parses as an `f64`, it is treated as a `Float`. For example taking a look at `sepal length (cm)` in the iris dataset, the resulting type is:
 ```rust
@@ -96,5 +98,15 @@ impl std::str::FromStr for sepal_length_cm {
 }
 ```
 
-* **Categorical**: Values that cannot be parsed as numbers are treated as `Str`.
+* **Categorical**: Values that cannot be parsed as numbers are treated as `Str`. The generated rust code for a string values column is like: (Example for iris dataset)
+```rust
+create_enum!(target;
+"Iris-setosa" => Iris_setosa,
+"Iris-versicolor" => Iris_versicolor,
+"Iris-virginica" => Iris_virginica,
+Null,
+);
+```
+A macro is used to have a sintactic sugar way to associate raw strings to the the typed enum variant.
+
 * **Metadata**: `ColumnInfo` tracks the count of these types and stores unique variants to facilitate categorical Enum generation.
