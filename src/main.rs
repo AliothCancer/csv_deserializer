@@ -3,7 +3,7 @@ use csv_types::*;
 
 use std::{error::Error, fs::File};
 
-use csv_deserializer::{CsvDataset, NullValues, create_enum, enum_gen::generate_enums_from, struct_gen::gen_struct};
+use csv_deserializer::{CsvDataset, NullValues, create_enum, enum_gen::generate_enums_from, print_csv_rust_code, struct_gen::gen_struct};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let path = "train.csv";
@@ -12,12 +12,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         .has_headers(true)
         .from_reader(file);
 
-    let mut dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
+    let dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
+    // print_csv_rust_code(&mut dataset);
+    let df = CsvDataFrame::new(dataset);
     
-    let enums = generate_enums_from(&mut dataset);
-    let struc = gen_struct(&dataset);
-    println!("#![allow(unused,non_snake_case)]\nuse csv_deserializer::create_enum;
-\n{}\n{}", enums, struc);
     Ok(())
 }
 

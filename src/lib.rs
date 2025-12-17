@@ -1,7 +1,7 @@
 pub mod dataset_info;
 
-pub mod struct_gen;
 pub mod enum_gen;
+pub mod struct_gen;
 
 pub mod sanitizer;
 
@@ -9,48 +9,58 @@ use std::io;
 
 use csv::Reader;
 
-use crate::{dataset_info::ColumnInfo, sanitizer::sanitize_identifier};
+use crate::{dataset_info::ColumnInfo, enum_gen::generate_enums_from, sanitizer::sanitize_identifier, struct_gen::gen_struct};
+
+pub const COLUMN_TYPE_ENUM_NAME: &str = "CsvColumn";
 
 
-pub const COLUMN_TYPE_ENUM_NAME: &str= "CsvColumn";
-
+/// Print to stdout the code generation for the provided CsvDataset
+pub fn print_csv_rust_code(dataset: &mut CsvDataset) {
+    let enums = generate_enums_from(dataset);
+    let struc = gen_struct(dataset);
+    println!("#![allow(unused,non_snake_case)]\nuse csv_deserializer::create_enum;\nuse std::str::FromStr;
+    \n{}\n{}", enums, struc);
+}
 
 #[derive(Debug)]
 pub struct CsvDataset {
     pub names: Vec<ColName>,
     pub values: Vec<Vec<CsvAny>>,
     pub null_values: NullValues,
-    pub info: Vec<ColumnInfo>
+    pub info: Vec<ColumnInfo>,
 }
 
-#[derive(Debug,Clone, Copy)]
-pub struct ValueNamesView<'a>{
+#[derive(Debug, Clone, Copy)]
+pub struct ValueNamesView<'a> {
     values: &'a [Vec<CsvAny>],
-    names: &'a [ColName]
+    names: &'a [ColName],
 }
 
-
 #[derive(Debug, Clone)]
-pub struct ColName{
+pub struct ColName {
     pub raw: String,
-    pub sanitized: SanitizedStr
+    pub sanitized: SanitizedStr,
 }
 
-
 #[derive(Debug, Clone)]
-pub struct SanitizedStr(String);
+pub struct SanitizedStr(pub String);
 
 #[derive(Debug)]
 pub struct NullValues(pub &'static [&'static str]);
 
 impl CsvDataset {
     pub fn new<R: io::Read>(mut reader: Reader<R>, null_values: NullValues) -> Self {
-        let names: Vec<ColName> = reader.headers().unwrap().iter().map(|str|{
-            let sanitized = SanitizedStr(sanitize_identifier(str));
-            let raw = str.to_string();
-            ColName { raw, sanitized }
-        }).collect();
-        let mut values: Vec<Vec<CsvAny>> = (0..names.len()).map(|_|Vec::new()).collect();
+        let names: Vec<ColName> = reader
+            .headers()
+            .unwrap()
+            .iter()
+            .map(|str| {
+                let sanitized = SanitizedStr(sanitize_identifier(str));
+                let raw = str.to_string();
+                ColName { raw, sanitized }
+            })
+            .collect();
+        let mut values: Vec<Vec<CsvAny>> = (0..names.len()).map(|_| Vec::new()).collect();
         reader.into_records().for_each(|x| {
             x.unwrap()
                 .iter()
@@ -68,16 +78,19 @@ impl CsvDataset {
             info: Vec::new(),
         }
     }
-    pub fn view_names_and_values(&self) -> ValueNamesView<'_>{
-        ValueNamesView { values: &self.values, names: &self.names }
+    pub fn view_names_and_values(&self) -> ValueNamesView<'_> {
+        ValueNamesView {
+            values: &self.values,
+            names: &self.names,
+        }
     }
     pub fn split_view_and_info(&mut self) -> (ValueNamesView<'_>, &mut Vec<ColumnInfo>) {
         (
-            ValueNamesView { 
-                values: &self.values, 
-                names: &self.names 
+            ValueNamesView {
+                values: &self.values,
+                names: &self.names,
             },
-            &mut self.info
+            &mut self.info,
         )
     }
 }

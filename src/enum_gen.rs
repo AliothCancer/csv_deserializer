@@ -115,7 +115,7 @@ pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
     } + "\n\n").collect::<String>();
 
     
-    let mut columns_enum = format!("enum {COLUMN_TYPE_ENUM_NAME}{{\n");
+    let mut columns_enum = format!("pub enum {COLUMN_TYPE_ENUM_NAME}{{\n");
 
     col_name.iter().for_each(|col_name|{
         columns_enum.push_str(&format!("{},\n", col_name.sanitized.0));
@@ -159,7 +159,7 @@ fn gen_float_enum(col_name: &ColName) -> String {
     let name = &col_name.sanitized.0;
     format!("
     #[derive(Debug, Clone, Copy, PartialEq)]
-    enum {name} {{ Float(f64), Null }}
+    pub enum {name} {{ Float(f64), Null }}
 
     impl std::str::FromStr for {name}{{
         type Err = String;
@@ -175,7 +175,7 @@ fn gen_int_enum(col_name: &ColName) -> String {
     let name = &col_name.sanitized.0;
     format!("
     #[derive(Debug, Clone, Copy, PartialEq)]
-    enum {name} {{ Int(i64), Null }}
+    pub enum {name} {{ Int(i64), Null }}
 
     impl std::str::FromStr for {name}{{
         type Err = String;

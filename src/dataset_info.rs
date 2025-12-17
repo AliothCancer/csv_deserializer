@@ -28,7 +28,7 @@ impl ColumnInfo {
         let (column_index, column_name) = names
             .iter()
             .enumerate()
-            .find(|(_, x)| column_name.contains(x.raw.as_str()))
+            .find(|(_, x)| column_name == x.raw.as_str())
             .unwrap_or_else(|| panic!("No column named {column_name} found!"));
 
         let mut number_of_empties = 0;

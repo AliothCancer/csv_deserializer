@@ -1,10 +1,9 @@
 #![allow(unused, non_snake_case)]
+use csv_deserializer::create_enum;
 use std::str::FromStr;
 
-use csv_deserializer::create_enum;
-
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum Id {
+pub enum Id {
     Int(i64),
     Null,
 }
@@ -19,7 +18,7 @@ impl std::str::FromStr for Id {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum MSSubClass {
+pub enum MSSubClass {
     Int(i64),
     Null,
 }
@@ -43,7 +42,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum LotFrontage {
+pub enum LotFrontage {
     Int(i64),
     Null,
 }
@@ -58,7 +57,7 @@ impl std::str::FromStr for LotFrontage {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum LotArea {
+pub enum LotArea {
     Int(i64),
     Null,
 }
@@ -198,7 +197,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum OverallQual {
+pub enum OverallQual {
     Int(i64),
     Null,
 }
@@ -213,7 +212,7 @@ impl std::str::FromStr for OverallQual {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum OverallCond {
+pub enum OverallCond {
     Int(i64),
     Null,
 }
@@ -228,7 +227,7 @@ impl std::str::FromStr for OverallCond {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum YearBuilt {
+pub enum YearBuilt {
     Int(i64),
     Null,
 }
@@ -243,7 +242,7 @@ impl std::str::FromStr for YearBuilt {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum YearRemodAdd {
+pub enum YearRemodAdd {
     Int(i64),
     Null,
 }
@@ -327,7 +326,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum MasVnrArea {
+pub enum MasVnrArea {
     Int(i64),
     Null,
 }
@@ -403,7 +402,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum BsmtFinSFOne {
+pub enum BsmtFinSFOne {
     Int(i64),
     Null,
 }
@@ -428,7 +427,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum BsmtFinSFTwo {
+pub enum BsmtFinSFTwo {
     Int(i64),
     Null,
 }
@@ -443,7 +442,7 @@ impl std::str::FromStr for BsmtFinSFTwo {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum BsmtUnfSF {
+pub enum BsmtUnfSF {
     Int(i64),
     Null,
 }
@@ -458,7 +457,7 @@ impl std::str::FromStr for BsmtUnfSF {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum TotalBsmtSF {
+pub enum TotalBsmtSF {
     Int(i64),
     Null,
 }
@@ -483,12 +482,11 @@ Null,
 );
 
 create_enum!(HeatingQC;
-"Floor" => Floor,
-"GasA" => GasA,
-"GasW" => GasW,
-"Grav" => Grav,
-"OthW" => OthW,
-"Wall" => Wall,
+"Ex" => Ex,
+"Fa" => Fa,
+"Gd" => Gd,
+"Po" => Po,
+"TA" => TA,
 Null,
 );
 
@@ -508,7 +506,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum OnestFlrSF {
+pub enum OnestFlrSF {
     Int(i64),
     Null,
 }
@@ -523,7 +521,7 @@ impl std::str::FromStr for OnestFlrSF {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum TwondFlrSF {
+pub enum TwondFlrSF {
     Int(i64),
     Null,
 }
@@ -538,7 +536,7 @@ impl std::str::FromStr for TwondFlrSF {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum LowQualFinSF {
+pub enum LowQualFinSF {
     Int(i64),
     Null,
 }
@@ -553,7 +551,7 @@ impl std::str::FromStr for LowQualFinSF {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum GrLivArea {
+pub enum GrLivArea {
     Int(i64),
     Null,
 }
@@ -568,7 +566,7 @@ impl std::str::FromStr for GrLivArea {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum BsmtFullBath {
+pub enum BsmtFullBath {
     Int(i64),
     Null,
 }
@@ -583,7 +581,7 @@ impl std::str::FromStr for BsmtFullBath {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum BsmtHalfBath {
+pub enum BsmtHalfBath {
     Int(i64),
     Null,
 }
@@ -598,7 +596,7 @@ impl std::str::FromStr for BsmtHalfBath {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum FullBath {
+pub enum FullBath {
     Int(i64),
     Null,
 }
@@ -613,7 +611,7 @@ impl std::str::FromStr for FullBath {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum HalfBath {
+pub enum HalfBath {
     Int(i64),
     Null,
 }
@@ -628,7 +626,7 @@ impl std::str::FromStr for HalfBath {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum BedroomAbvGr {
+pub enum BedroomAbvGr {
     Int(i64),
     Null,
 }
@@ -643,7 +641,7 @@ impl std::str::FromStr for BedroomAbvGr {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum KitchenAbvGr {
+pub enum KitchenAbvGr {
     Int(i64),
     Null,
 }
@@ -666,7 +664,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum TotRmsAbvGrd {
+pub enum TotRmsAbvGrd {
     Int(i64),
     Null,
 }
@@ -692,7 +690,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum Fireplaces {
+pub enum Fireplaces {
     Int(i64),
     Null,
 }
@@ -726,7 +724,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum GarageYrBlt {
+pub enum GarageYrBlt {
     Int(i64),
     Null,
 }
@@ -748,7 +746,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum GarageCars {
+pub enum GarageCars {
     Int(i64),
     Null,
 }
@@ -763,7 +761,7 @@ impl std::str::FromStr for GarageCars {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum GarageArea {
+pub enum GarageArea {
     Int(i64),
     Null,
 }
@@ -803,7 +801,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum WoodDeckSF {
+pub enum WoodDeckSF {
     Int(i64),
     Null,
 }
@@ -818,7 +816,7 @@ impl std::str::FromStr for WoodDeckSF {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum OpenPorchSF {
+pub enum OpenPorchSF {
     Int(i64),
     Null,
 }
@@ -833,7 +831,7 @@ impl std::str::FromStr for OpenPorchSF {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum EnclosedPorch {
+pub enum EnclosedPorch {
     Int(i64),
     Null,
 }
@@ -848,7 +846,7 @@ impl std::str::FromStr for EnclosedPorch {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum ThreeSsnPorch {
+pub enum ThreeSsnPorch {
     Int(i64),
     Null,
 }
@@ -863,7 +861,7 @@ impl std::str::FromStr for ThreeSsnPorch {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum ScreenPorch {
+pub enum ScreenPorch {
     Int(i64),
     Null,
 }
@@ -878,7 +876,7 @@ impl std::str::FromStr for ScreenPorch {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum PoolArea {
+pub enum PoolArea {
     Int(i64),
     Null,
 }
@@ -916,7 +914,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum MiscVal {
+pub enum MiscVal {
     Int(i64),
     Null,
 }
@@ -931,7 +929,7 @@ impl std::str::FromStr for MiscVal {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum MoSold {
+pub enum MoSold {
     Int(i64),
     Null,
 }
@@ -946,7 +944,7 @@ impl std::str::FromStr for MoSold {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum YrSold {
+pub enum YrSold {
     Int(i64),
     Null,
 }
@@ -984,7 +982,7 @@ Null,
 );
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-enum SalePrice {
+pub enum SalePrice {
     Int(i64),
     Null,
 }
@@ -998,7 +996,7 @@ impl std::str::FromStr for SalePrice {
     }
 }
 
-enum CsvColumn {
+pub enum CsvColumn {
     Id,
     MSSubClass,
     MSZoning,
@@ -1172,103 +1170,1386 @@ impl std::str::FromStr for CsvColumn {
     }
 }
 pub struct CsvDataFrame {
-    columns: Vec<CsvColumn>,
-    Id: Vec<Id>,
-    MSSubClass: Vec<MSSubClass>,
-    MSZoning: Vec<MSZoning>,
-    LotFrontage: Vec<LotFrontage>,
-    LotArea: Vec<LotArea>,
-    Street: Vec<Street>,
-    Alley: Vec<Alley>,
-    LotShape: Vec<LotShape>,
-    LandContour: Vec<LandContour>,
-    Utilities: Vec<Utilities>,
-    LotConfig: Vec<LotConfig>,
-    LandSlope: Vec<LandSlope>,
-    Neighborhood: Vec<Neighborhood>,
-    ConditionOne: Vec<ConditionOne>,
-    ConditionTwo: Vec<ConditionTwo>,
-    BldgType: Vec<BldgType>,
-    HouseStyle: Vec<HouseStyle>,
-    OverallQual: Vec<OverallQual>,
-    OverallCond: Vec<OverallCond>,
-    YearBuilt: Vec<YearBuilt>,
-    YearRemodAdd: Vec<YearRemodAdd>,
-    RoofStyle: Vec<RoofStyle>,
-    RoofMatl: Vec<RoofMatl>,
-    ExteriorOnest: Vec<ExteriorOnest>,
-    ExteriorTwond: Vec<ExteriorTwond>,
-    MasVnrType: Vec<MasVnrType>,
-    MasVnrArea: Vec<MasVnrArea>,
-    ExterQual: Vec<ExterQual>,
-    ExterCond: Vec<ExterCond>,
-    Foundation: Vec<Foundation>,
-    BsmtQual: Vec<BsmtQual>,
-    BsmtCond: Vec<BsmtCond>,
-    BsmtExposure: Vec<BsmtExposure>,
-    BsmtFinTypeOne: Vec<BsmtFinTypeOne>,
-    BsmtFinSFOne: Vec<BsmtFinSFOne>,
-    BsmtFinTypeTwo: Vec<BsmtFinTypeTwo>,
-    BsmtFinSFTwo: Vec<BsmtFinSFTwo>,
-    BsmtUnfSF: Vec<BsmtUnfSF>,
-    TotalBsmtSF: Vec<TotalBsmtSF>,
-    Heating: Vec<Heating>,
-    HeatingQC: Vec<HeatingQC>,
-    CentralAir: Vec<CentralAir>,
-    Electrical: Vec<Electrical>,
-    OnestFlrSF: Vec<OnestFlrSF>,
-    TwondFlrSF: Vec<TwondFlrSF>,
-    LowQualFinSF: Vec<LowQualFinSF>,
-    GrLivArea: Vec<GrLivArea>,
-    BsmtFullBath: Vec<BsmtFullBath>,
-    BsmtHalfBath: Vec<BsmtHalfBath>,
-    FullBath: Vec<FullBath>,
-    HalfBath: Vec<HalfBath>,
-    BedroomAbvGr: Vec<BedroomAbvGr>,
-    KitchenAbvGr: Vec<KitchenAbvGr>,
-    KitchenQual: Vec<KitchenQual>,
-    TotRmsAbvGrd: Vec<TotRmsAbvGrd>,
-    Functional: Vec<Functional>,
-    Fireplaces: Vec<Fireplaces>,
-    FireplaceQu: Vec<FireplaceQu>,
-    GarageType: Vec<GarageType>,
-    GarageYrBlt: Vec<GarageYrBlt>,
-    GarageFinish: Vec<GarageFinish>,
-    GarageCars: Vec<GarageCars>,
-    GarageArea: Vec<GarageArea>,
-    GarageQual: Vec<GarageQual>,
-    GarageCond: Vec<GarageCond>,
-    PavedDrive: Vec<PavedDrive>,
-    WoodDeckSF: Vec<WoodDeckSF>,
-    OpenPorchSF: Vec<OpenPorchSF>,
-    EnclosedPorch: Vec<EnclosedPorch>,
-    ThreeSsnPorch: Vec<ThreeSsnPorch>,
-    ScreenPorch: Vec<ScreenPorch>,
-    PoolArea: Vec<PoolArea>,
-    PoolQC: Vec<PoolQC>,
-    Fence: Vec<Fence>,
-    MiscFeature: Vec<MiscFeature>,
-    MiscVal: Vec<MiscVal>,
-    MoSold: Vec<MoSold>,
-    YrSold: Vec<YrSold>,
-    SaleType: Vec<SaleType>,
-    SaleCondition: Vec<SaleCondition>,
-    SalePrice: Vec<SalePrice>,
+    pub columns: Vec<CsvColumn>,
+    pub id: Vec<Id>,
+    pub mssubclass: Vec<MSSubClass>,
+    pub mszoning: Vec<MSZoning>,
+    pub lotfrontage: Vec<LotFrontage>,
+    pub lotarea: Vec<LotArea>,
+    pub street: Vec<Street>,
+    pub alley: Vec<Alley>,
+    pub lotshape: Vec<LotShape>,
+    pub landcontour: Vec<LandContour>,
+    pub utilities: Vec<Utilities>,
+    pub lotconfig: Vec<LotConfig>,
+    pub landslope: Vec<LandSlope>,
+    pub neighborhood: Vec<Neighborhood>,
+    pub conditionone: Vec<ConditionOne>,
+    pub conditiontwo: Vec<ConditionTwo>,
+    pub bldgtype: Vec<BldgType>,
+    pub housestyle: Vec<HouseStyle>,
+    pub overallqual: Vec<OverallQual>,
+    pub overallcond: Vec<OverallCond>,
+    pub yearbuilt: Vec<YearBuilt>,
+    pub yearremodadd: Vec<YearRemodAdd>,
+    pub roofstyle: Vec<RoofStyle>,
+    pub roofmatl: Vec<RoofMatl>,
+    pub exterioronest: Vec<ExteriorOnest>,
+    pub exteriortwond: Vec<ExteriorTwond>,
+    pub masvnrtype: Vec<MasVnrType>,
+    pub masvnrarea: Vec<MasVnrArea>,
+    pub exterqual: Vec<ExterQual>,
+    pub extercond: Vec<ExterCond>,
+    pub foundation: Vec<Foundation>,
+    pub bsmtqual: Vec<BsmtQual>,
+    pub bsmtcond: Vec<BsmtCond>,
+    pub bsmtexposure: Vec<BsmtExposure>,
+    pub bsmtfintypeone: Vec<BsmtFinTypeOne>,
+    pub bsmtfinsfone: Vec<BsmtFinSFOne>,
+    pub bsmtfintypetwo: Vec<BsmtFinTypeTwo>,
+    pub bsmtfinsftwo: Vec<BsmtFinSFTwo>,
+    pub bsmtunfsf: Vec<BsmtUnfSF>,
+    pub totalbsmtsf: Vec<TotalBsmtSF>,
+    pub heating: Vec<Heating>,
+    pub heatingqc: Vec<HeatingQC>,
+    pub centralair: Vec<CentralAir>,
+    pub electrical: Vec<Electrical>,
+    pub onestflrsf: Vec<OnestFlrSF>,
+    pub twondflrsf: Vec<TwondFlrSF>,
+    pub lowqualfinsf: Vec<LowQualFinSF>,
+    pub grlivarea: Vec<GrLivArea>,
+    pub bsmtfullbath: Vec<BsmtFullBath>,
+    pub bsmthalfbath: Vec<BsmtHalfBath>,
+    pub fullbath: Vec<FullBath>,
+    pub halfbath: Vec<HalfBath>,
+    pub bedroomabvgr: Vec<BedroomAbvGr>,
+    pub kitchenabvgr: Vec<KitchenAbvGr>,
+    pub kitchenqual: Vec<KitchenQual>,
+    pub totrmsabvgrd: Vec<TotRmsAbvGrd>,
+    pub functional: Vec<Functional>,
+    pub fireplaces: Vec<Fireplaces>,
+    pub fireplacequ: Vec<FireplaceQu>,
+    pub garagetype: Vec<GarageType>,
+    pub garageyrblt: Vec<GarageYrBlt>,
+    pub garagefinish: Vec<GarageFinish>,
+    pub garagecars: Vec<GarageCars>,
+    pub garagearea: Vec<GarageArea>,
+    pub garagequal: Vec<GarageQual>,
+    pub garagecond: Vec<GarageCond>,
+    pub paveddrive: Vec<PavedDrive>,
+    pub wooddecksf: Vec<WoodDeckSF>,
+    pub openporchsf: Vec<OpenPorchSF>,
+    pub enclosedporch: Vec<EnclosedPorch>,
+    pub threessnporch: Vec<ThreeSsnPorch>,
+    pub screenporch: Vec<ScreenPorch>,
+    pub poolarea: Vec<PoolArea>,
+    pub poolqc: Vec<PoolQC>,
+    pub fence: Vec<Fence>,
+    pub miscfeature: Vec<MiscFeature>,
+    pub miscval: Vec<MiscVal>,
+    pub mosold: Vec<MoSold>,
+    pub yrsold: Vec<YrSold>,
+    pub saletype: Vec<SaleType>,
+    pub salecondition: Vec<SaleCondition>,
+    pub saleprice: Vec<SalePrice>,
 }
-
 impl CsvDataFrame {
-    fn new(dataset: &mut csv_deserializer::CsvDataset) -> Self {
-        let Id = dataset
-            .values
-            .pop()
-            .unwrap()
-            .into_iter()
-            .map(|id| match id {
-                csv_deserializer::CsvAny::Int(i) => Id::Int(i),
+    pub fn new(dataset: csv_deserializer::CsvDataset) -> Self {
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Id")
+            .unwrap();
+        let id = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => Id::Int(*i),
                 csv_deserializer::CsvAny::Null => Id::Null,
+
                 _ => panic!(),
             })
             .collect::<Vec<Id>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MSSubClass")
+            .unwrap();
+        let mssubclass = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => MSSubClass::Int(*i),
+                csv_deserializer::CsvAny::Null => MSSubClass::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MSSubClass>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MSZoning")
+            .unwrap();
+        let mszoning = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => MSZoning::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => MSZoning::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MSZoning>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LotFrontage")
+            .unwrap();
+        let lotfrontage = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => LotFrontage::Int(*i),
+                csv_deserializer::CsvAny::Null => LotFrontage::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LotFrontage>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LotArea")
+            .unwrap();
+        let lotarea = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => LotArea::Int(*i),
+                csv_deserializer::CsvAny::Null => LotArea::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LotArea>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Street")
+            .unwrap();
+        let street = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Street::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Street::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Street>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Alley")
+            .unwrap();
+        let alley = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Alley::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Alley::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Alley>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LotShape")
+            .unwrap();
+        let lotshape = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => LotShape::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => LotShape::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LotShape>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LandContour")
+            .unwrap();
+        let landcontour = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => LandContour::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => LandContour::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LandContour>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Utilities")
+            .unwrap();
+        let utilities = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Utilities::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Utilities::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Utilities>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LotConfig")
+            .unwrap();
+        let lotconfig = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => LotConfig::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => LotConfig::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LotConfig>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LandSlope")
+            .unwrap();
+        let landslope = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => LandSlope::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => LandSlope::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LandSlope>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Neighborhood")
+            .unwrap();
+        let neighborhood = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Neighborhood::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Neighborhood::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Neighborhood>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ConditionOne")
+            .unwrap();
+        let conditionone = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => ConditionOne::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => ConditionOne::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ConditionOne>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ConditionTwo")
+            .unwrap();
+        let conditiontwo = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => ConditionTwo::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => ConditionTwo::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ConditionTwo>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BldgType")
+            .unwrap();
+        let bldgtype = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => BldgType::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => BldgType::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BldgType>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "HouseStyle")
+            .unwrap();
+        let housestyle = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => HouseStyle::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => HouseStyle::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<HouseStyle>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "OverallQual")
+            .unwrap();
+        let overallqual = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => OverallQual::Int(*i),
+                csv_deserializer::CsvAny::Null => OverallQual::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<OverallQual>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "OverallCond")
+            .unwrap();
+        let overallcond = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => OverallCond::Int(*i),
+                csv_deserializer::CsvAny::Null => OverallCond::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<OverallCond>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "YearBuilt")
+            .unwrap();
+        let yearbuilt = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => YearBuilt::Int(*i),
+                csv_deserializer::CsvAny::Null => YearBuilt::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<YearBuilt>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "YearRemodAdd")
+            .unwrap();
+        let yearremodadd = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => YearRemodAdd::Int(*i),
+                csv_deserializer::CsvAny::Null => YearRemodAdd::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<YearRemodAdd>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "RoofStyle")
+            .unwrap();
+        let roofstyle = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => RoofStyle::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => RoofStyle::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<RoofStyle>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "RoofMatl")
+            .unwrap();
+        let roofmatl = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => RoofMatl::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => RoofMatl::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<RoofMatl>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ExteriorOnest")
+            .unwrap();
+        let exterioronest = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => ExteriorOnest::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => ExteriorOnest::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ExteriorOnest>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ExteriorTwond")
+            .unwrap();
+        let exteriortwond = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => ExteriorTwond::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => ExteriorTwond::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ExteriorTwond>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MasVnrType")
+            .unwrap();
+        let masvnrtype = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => MasVnrType::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => MasVnrType::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MasVnrType>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MasVnrArea")
+            .unwrap();
+        let masvnrarea = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => MasVnrArea::Int(*i),
+                csv_deserializer::CsvAny::Null => MasVnrArea::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MasVnrArea>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ExterQual")
+            .unwrap();
+        let exterqual = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => ExterQual::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => ExterQual::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ExterQual>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ExterCond")
+            .unwrap();
+        let extercond = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => ExterCond::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => ExterCond::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ExterCond>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Foundation")
+            .unwrap();
+        let foundation = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Foundation::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Foundation::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Foundation>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtQual")
+            .unwrap();
+        let bsmtqual = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => BsmtQual::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => BsmtQual::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtQual>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtCond")
+            .unwrap();
+        let bsmtcond = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => BsmtCond::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => BsmtCond::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtCond>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtExposure")
+            .unwrap();
+        let bsmtexposure = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => BsmtExposure::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => BsmtExposure::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtExposure>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtFinTypeOne")
+            .unwrap();
+        let bsmtfintypeone = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => BsmtFinTypeOne::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => BsmtFinTypeOne::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtFinTypeOne>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtFinSFOne")
+            .unwrap();
+        let bsmtfinsfone = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => BsmtFinSFOne::Int(*i),
+                csv_deserializer::CsvAny::Null => BsmtFinSFOne::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtFinSFOne>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtFinTypeTwo")
+            .unwrap();
+        let bsmtfintypetwo = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => BsmtFinTypeTwo::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => BsmtFinTypeTwo::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtFinTypeTwo>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtFinSFTwo")
+            .unwrap();
+        let bsmtfinsftwo = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => BsmtFinSFTwo::Int(*i),
+                csv_deserializer::CsvAny::Null => BsmtFinSFTwo::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtFinSFTwo>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtUnfSF")
+            .unwrap();
+        let bsmtunfsf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => BsmtUnfSF::Int(*i),
+                csv_deserializer::CsvAny::Null => BsmtUnfSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtUnfSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "TotalBsmtSF")
+            .unwrap();
+        let totalbsmtsf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => TotalBsmtSF::Int(*i),
+                csv_deserializer::CsvAny::Null => TotalBsmtSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<TotalBsmtSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Heating")
+            .unwrap();
+        let heating = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Heating::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Heating::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Heating>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "HeatingQC")
+            .unwrap();
+        let heatingqc = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => HeatingQC::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => HeatingQC::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<HeatingQC>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "CentralAir")
+            .unwrap();
+        let centralair = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => CentralAir::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => CentralAir::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<CentralAir>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Electrical")
+            .unwrap();
+        let electrical = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Electrical::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Electrical::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Electrical>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "OnestFlrSF")
+            .unwrap();
+        let onestflrsf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => OnestFlrSF::Int(*i),
+                csv_deserializer::CsvAny::Null => OnestFlrSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<OnestFlrSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "TwondFlrSF")
+            .unwrap();
+        let twondflrsf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => TwondFlrSF::Int(*i),
+                csv_deserializer::CsvAny::Null => TwondFlrSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<TwondFlrSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "LowQualFinSF")
+            .unwrap();
+        let lowqualfinsf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => LowQualFinSF::Int(*i),
+                csv_deserializer::CsvAny::Null => LowQualFinSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<LowQualFinSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GrLivArea")
+            .unwrap();
+        let grlivarea = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => GrLivArea::Int(*i),
+                csv_deserializer::CsvAny::Null => GrLivArea::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GrLivArea>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtFullBath")
+            .unwrap();
+        let bsmtfullbath = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => BsmtFullBath::Int(*i),
+                csv_deserializer::CsvAny::Null => BsmtFullBath::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtFullBath>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BsmtHalfBath")
+            .unwrap();
+        let bsmthalfbath = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => BsmtHalfBath::Int(*i),
+                csv_deserializer::CsvAny::Null => BsmtHalfBath::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BsmtHalfBath>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "FullBath")
+            .unwrap();
+        let fullbath = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => FullBath::Int(*i),
+                csv_deserializer::CsvAny::Null => FullBath::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<FullBath>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "HalfBath")
+            .unwrap();
+        let halfbath = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => HalfBath::Int(*i),
+                csv_deserializer::CsvAny::Null => HalfBath::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<HalfBath>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "BedroomAbvGr")
+            .unwrap();
+        let bedroomabvgr = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => BedroomAbvGr::Int(*i),
+                csv_deserializer::CsvAny::Null => BedroomAbvGr::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<BedroomAbvGr>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "KitchenAbvGr")
+            .unwrap();
+        let kitchenabvgr = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => KitchenAbvGr::Int(*i),
+                csv_deserializer::CsvAny::Null => KitchenAbvGr::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<KitchenAbvGr>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "KitchenQual")
+            .unwrap();
+        let kitchenqual = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => KitchenQual::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => KitchenQual::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<KitchenQual>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "TotRmsAbvGrd")
+            .unwrap();
+        let totrmsabvgrd = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => TotRmsAbvGrd::Int(*i),
+                csv_deserializer::CsvAny::Null => TotRmsAbvGrd::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<TotRmsAbvGrd>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Functional")
+            .unwrap();
+        let functional = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Functional::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Functional::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Functional>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Fireplaces")
+            .unwrap();
+        let fireplaces = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => Fireplaces::Int(*i),
+                csv_deserializer::CsvAny::Null => Fireplaces::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Fireplaces>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "FireplaceQu")
+            .unwrap();
+        let fireplacequ = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => FireplaceQu::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => FireplaceQu::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<FireplaceQu>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageType")
+            .unwrap();
+        let garagetype = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => GarageType::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => GarageType::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageType>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageYrBlt")
+            .unwrap();
+        let garageyrblt = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => GarageYrBlt::Int(*i),
+                csv_deserializer::CsvAny::Null => GarageYrBlt::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageYrBlt>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageFinish")
+            .unwrap();
+        let garagefinish = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => GarageFinish::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => GarageFinish::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageFinish>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageCars")
+            .unwrap();
+        let garagecars = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => GarageCars::Int(*i),
+                csv_deserializer::CsvAny::Null => GarageCars::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageCars>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageArea")
+            .unwrap();
+        let garagearea = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => GarageArea::Int(*i),
+                csv_deserializer::CsvAny::Null => GarageArea::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageArea>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageQual")
+            .unwrap();
+        let garagequal = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => GarageQual::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => GarageQual::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageQual>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "GarageCond")
+            .unwrap();
+        let garagecond = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => GarageCond::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => GarageCond::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<GarageCond>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "PavedDrive")
+            .unwrap();
+        let paveddrive = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => PavedDrive::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => PavedDrive::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<PavedDrive>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "WoodDeckSF")
+            .unwrap();
+        let wooddecksf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => WoodDeckSF::Int(*i),
+                csv_deserializer::CsvAny::Null => WoodDeckSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<WoodDeckSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "OpenPorchSF")
+            .unwrap();
+        let openporchsf = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => OpenPorchSF::Int(*i),
+                csv_deserializer::CsvAny::Null => OpenPorchSF::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<OpenPorchSF>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "EnclosedPorch")
+            .unwrap();
+        let enclosedporch = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => EnclosedPorch::Int(*i),
+                csv_deserializer::CsvAny::Null => EnclosedPorch::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<EnclosedPorch>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ThreeSsnPorch")
+            .unwrap();
+        let threessnporch = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => ThreeSsnPorch::Int(*i),
+                csv_deserializer::CsvAny::Null => ThreeSsnPorch::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ThreeSsnPorch>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "ScreenPorch")
+            .unwrap();
+        let screenporch = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => ScreenPorch::Int(*i),
+                csv_deserializer::CsvAny::Null => ScreenPorch::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<ScreenPorch>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "PoolArea")
+            .unwrap();
+        let poolarea = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => PoolArea::Int(*i),
+                csv_deserializer::CsvAny::Null => PoolArea::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<PoolArea>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "PoolQC")
+            .unwrap();
+        let poolqc = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => PoolQC::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => PoolQC::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<PoolQC>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "Fence")
+            .unwrap();
+        let fence = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => Fence::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => Fence::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<Fence>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MiscFeature")
+            .unwrap();
+        let miscfeature = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => MiscFeature::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => MiscFeature::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MiscFeature>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MiscVal")
+            .unwrap();
+        let miscval = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => MiscVal::Int(*i),
+                csv_deserializer::CsvAny::Null => MiscVal::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MiscVal>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "MoSold")
+            .unwrap();
+        let mosold = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => MoSold::Int(*i),
+                csv_deserializer::CsvAny::Null => MoSold::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<MoSold>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "YrSold")
+            .unwrap();
+        let yrsold = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => YrSold::Int(*i),
+                csv_deserializer::CsvAny::Null => YrSold::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<YrSold>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "SaleType")
+            .unwrap();
+        let saletype = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => SaleType::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => SaleType::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<SaleType>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "SaleCondition")
+            .unwrap();
+        let salecondition = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Str(s) => SaleCondition::from_str(s).unwrap(),
+                csv_deserializer::CsvAny::Null => SaleCondition::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<SaleCondition>>();
+
+        let (index, _) = dataset
+            .names
+            .iter()
+            .enumerate()
+            .find(|(index, cl)| &cl.sanitized.0 == "SalePrice")
+            .unwrap();
+        let saleprice = dataset.values[index]
+            .iter()
+            .map(|val| match val {
+                csv_deserializer::CsvAny::Int(i) => SalePrice::Int(*i),
+                csv_deserializer::CsvAny::Null => SalePrice::Null,
+
+                _ => panic!(),
+            })
+            .collect::<Vec<SalePrice>>();
 
         let columns: Vec<CsvColumn> = dataset
             .names
@@ -1277,6 +2558,89 @@ impl CsvDataFrame {
             .filter_map(|(col_index, name)| CsvColumn::from_str(&name.raw).ok())
             .collect();
 
-        todo!()
+        CsvDataFrame {
+            columns,
+            id,
+            mssubclass,
+            mszoning,
+            lotfrontage,
+            lotarea,
+            street,
+            alley,
+            lotshape,
+            landcontour,
+            utilities,
+            lotconfig,
+            landslope,
+            neighborhood,
+            conditionone,
+            conditiontwo,
+            bldgtype,
+            housestyle,
+            overallqual,
+            overallcond,
+            yearbuilt,
+            yearremodadd,
+            roofstyle,
+            roofmatl,
+            exterioronest,
+            exteriortwond,
+            masvnrtype,
+            masvnrarea,
+            exterqual,
+            extercond,
+            foundation,
+            bsmtqual,
+            bsmtcond,
+            bsmtexposure,
+            bsmtfintypeone,
+            bsmtfinsfone,
+            bsmtfintypetwo,
+            bsmtfinsftwo,
+            bsmtunfsf,
+            totalbsmtsf,
+            heating,
+            heatingqc,
+            centralair,
+            electrical,
+            onestflrsf,
+            twondflrsf,
+            lowqualfinsf,
+            grlivarea,
+            bsmtfullbath,
+            bsmthalfbath,
+            fullbath,
+            halfbath,
+            bedroomabvgr,
+            kitchenabvgr,
+            kitchenqual,
+            totrmsabvgrd,
+            functional,
+            fireplaces,
+            fireplacequ,
+            garagetype,
+            garageyrblt,
+            garagefinish,
+            garagecars,
+            garagearea,
+            garagequal,
+            garagecond,
+            paveddrive,
+            wooddecksf,
+            openporchsf,
+            enclosedporch,
+            threessnporch,
+            screenporch,
+            poolarea,
+            poolqc,
+            fence,
+            miscfeature,
+            miscval,
+            mosold,
+            yrsold,
+            saletype,
+            salecondition,
+            saleprice,
+        }
     }
 }
