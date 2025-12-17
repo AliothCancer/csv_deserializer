@@ -115,7 +115,7 @@ pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
     } + "\n\n").collect::<String>();
 
     
-    let mut columns_enum = format!("pub enum {COLUMN_TYPE_ENUM_NAME}{{\n");
+    let mut columns_enum = format!("#[derive(Debug)]\npub enum {COLUMN_TYPE_ENUM_NAME}{{\n");
 
     col_name.iter().for_each(|col_name|{
         columns_enum.push_str(&format!("{},\n", col_name.sanitized.0));

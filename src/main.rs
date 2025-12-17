@@ -16,6 +16,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     // print_csv_rust_code(&mut dataset);
     let df = CsvDataFrame::new(dataset);
     
+    let fv_counter = df.mszoning.iter().filter_map(|x| match x {
+        MSZoning::FV => Some(()),
+        _ => None,
+    }).count();
+    dbg!(fv_counter);
+    
     Ok(())
 }
 

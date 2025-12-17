@@ -995,7 +995,7 @@ impl std::str::FromStr for SalePrice {
         Ok(SalePrice::Int(i))
     }
 }
-
+#[derive(Debug)]
 pub enum CsvColumn {
     Id,
     MSSubClass,
@@ -1169,6 +1169,8 @@ impl std::str::FromStr for CsvColumn {
         }
     }
 }
+
+#[derive(Debug)]
 pub struct CsvDataFrame {
     pub columns: Vec<CsvColumn>,
     pub id: Vec<Id>,

@@ -107,14 +107,3 @@ let {sanitized_lower} = dataset.values[index].iter().map(|val| match val{{
     )
 }
 
-#[allow(unused)]
-fn gen_try_from_csvany(name: SanitizedStr, unique_values: &[Variant]) -> String {
-    let mut try_from_str = String::new();
-    format!(
-        "\
-impl TryFrom<CsvAny> for {}
-",
-        name.0
-    );
-    todo!()
-}
