@@ -1,6 +1,7 @@
 # What is this repo?
-This repo contains a rust binary (main.rs) which translate a csv table in rust types, every column is converted into a Vec of enum.
-The binary will output all the rust code.
+This repo contains a rust binary (main.rs) which translate a csv table in rust types, every column is converted into a Vec of enum representing all the unique types, if a column is of String type then every unique String will be deserialized as an enum variant (see iris dataset example).
+
+- The binary will output all the rust code to stdout so it can be easily piped to write a file via terminal.
 
 # Bin usage
 ```bash
