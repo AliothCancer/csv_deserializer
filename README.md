@@ -1,4 +1,4 @@
-# Typed CSV Usage Guide
+# Usage Guide
 
 To use this library for generating and utilizing a typed Rust interface for your CSV files, follow these steps:
 
