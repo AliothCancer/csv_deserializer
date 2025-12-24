@@ -2,6 +2,13 @@
 name = "csv_deserializer"
 version = "0.1.0"
 edition = "2024"
+description = "A rust library to load a csv in a rusty typed way, all values are converted to the most appropriate enum"
+readme = "README.md"
+repository = "https://github.com/AliothCancer/csv_deserializer"
+license = "MIT OR Apache-2.0"
+license-file = "LICENSE"
+keywords = ["csv", "deserialization", "gen-code", "rs-code"]
+
 
 [dependencies]
 clap = { version = "4.5.53", features = ["derive"] }
