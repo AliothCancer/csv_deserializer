@@ -31,7 +31,7 @@ cp target/release/csv_deserializer ~/.local/bin
 
 # Bin usage
 ```bash
-❯ cargo run --release --quiet -- -h
+❯ csv_deserializer -h
 Usage: csv_deserializer [OPTIONS] --input-file <input_file>
 
 Options:
