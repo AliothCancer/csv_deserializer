@@ -14,7 +14,7 @@ pub fn sanitize_identifier(raw: &str) -> String {
             ',' => "Comma".into(),
             ':' => "Colon".into(),
             ';' => "Semi".into(),
-            '_' => "Underscore".into(),
+            '_' => "_".into(),
 
             // Math & Logic
             '+' => "Plus".into(),
