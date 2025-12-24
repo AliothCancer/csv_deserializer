@@ -1,4 +1,20 @@
-# Usage Guide
+# What is this repo?
+This repo contains a rust binary (main.rs) which translate a csv table in rust types, every column is converted into a Vec of enum.
+The binary will output all the rust code.
+
+# Bin usage
+```bash
+> cargo run --release --quiet -- -h
+Usage: csv_deserializer --input-file <input_file> --null-values <a,b,..>
+
+Options:
+  -i, --input-file <input_file>
+  -n, --null-values <a,b,..>
+  -h, --help                     Print help
+  -V, --version                  Print version
+```
+
+# Lib Usage Guide
 
 To use this library for generating and utilizing a typed Rust interface for your CSV files, follow these steps:
 
