@@ -64,7 +64,7 @@ fn gen_new_method(col_names: &[ColName], cols_info: &[ColumnInfo]) -> String {
         .collect::<String>();
     format!(
         "\
-    pub fn new(dataset: csv_deserializer::CsvDataset) -> Self{{
+    pub fn new(dataset: &csv_deserializer::CsvDataset) -> Self{{
         {vecs_of_enums}
 
         {MAIN_STRUCT_NAME}{{

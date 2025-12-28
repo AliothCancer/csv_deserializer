@@ -28,8 +28,8 @@ pub struct CsvDataset<'a> {
 
 #[derive(Debug, Clone, Copy)]
 pub struct ValueNamesView<'a> {
-    values: &'a [Vec<CsvAny>],
-    names: &'a [ColName],
+    pub values: &'a [Vec<CsvAny>],
+    pub names: &'a [ColName],
 }
 
 #[derive(Debug, Clone)]
