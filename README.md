@@ -82,7 +82,7 @@ let rdr = csv::ReaderBuilder::new()
     .has_headers(true)
     .from_reader(file);
 
-let mut dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
+let dataset = CsvDataset::new(rdr, NullValues(&["NA"]));
 ```
 
 ## 2. Generating Rust Code
@@ -95,7 +95,7 @@ Once the code is saved into a file (e.g., `iris.rs`), you can import it into you
 mod iris;
 use iris::*;
 
-let df = CsvDataFrame::new(dataset);
+let df = CsvDataFrame::new(&dataset);
 ```
 
 ## 4. Iris Dataset ETL Example

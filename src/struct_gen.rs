@@ -6,7 +6,7 @@ use crate::{
 };
 
 /// It generates a struct named `CsvDataFrame` which
-/// contains all Vec<T> where T is the generated enums
+/// contains all `Vec<T>` where T is the generated enums
 /// for each columns
 pub fn gen_struct(dataset: &CsvDataset) -> String {
     let mut final_str = format!("pub struct {MAIN_STRUCT_NAME}{{\n");
