@@ -1,6 +1,6 @@
 [package]
 name = "csv_deserializer"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "A rust library to load a csv in a rusty typed way, all values are converted to the most appropriate enum"
 readme = "README.md"
