@@ -1,3 +1,5 @@
+#![allow(clippy::uninlined_format_args)]
+
 use crate::{
     COLUMN_TYPE_ENUM_NAME, ColName, CsvDataset, MAIN_STRUCT_NAME, SanitizedStr,
     dataset_info::{ColumnInfo, Variant},

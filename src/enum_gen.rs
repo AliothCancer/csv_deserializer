@@ -1,3 +1,5 @@
+#![allow(clippy::uninlined_format_args)]
+
 use crate::{COLUMN_TYPE_ENUM_NAME,ColName, CsvAny, CsvDataset, dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
 
 
@@ -66,13 +68,12 @@ macro_rules! create_enum {
 }
 
 
+
+
 pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
     
     let mut full_string = String::new();
 
-    // I cloned because I need CsvDataset as mutable
-    // to populate the field `info:Vec<ColumnInfo>`
-    // but I also need a reference to `names` (another field of itself)
     let (value_names_view, info) = dataset.split_view_and_info();
     let col_name = value_names_view.names;
     let enums = col_name.iter().map(|col_name| {
@@ -117,10 +118,10 @@ pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
     
     let mut columns_enum = format!("#[derive(Debug)]\npub enum {COLUMN_TYPE_ENUM_NAME}{{\n");
 
-    col_name.iter().for_each(|col_name|{
+    for col_name in col_name.iter() {
         let sanitized = &col_name.sanitized.0;
         columns_enum.push_str(&format!("{sanitized}(Vec<{sanitized}>),\n"));
-    });
+    }
     columns_enum.push_str("}\n\n");
 
     

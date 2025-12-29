@@ -96,6 +96,7 @@ impl ColumnInfo {
             unique_values,
         }
     }
+    
 }
 
 impl Display for ColumnInfo {

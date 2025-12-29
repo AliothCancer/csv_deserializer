@@ -10,12 +10,12 @@ use csv_deserializer::{
     CsvDataset, NullValues, enum_gen::generate_enums_from, struct_gen::gen_struct,
 };
 
-/// Print to stdout the code generation for the provided CsvDataset
+/// Print to stdout the code generation for the provided `CsvDataset`
 fn print_csv_rust_code(dataset: &mut CsvDataset) {
     let enums = generate_enums_from(dataset);
     let struc = gen_struct(dataset);
     println!("#![allow(unused,non_snake_case,non_camel_case_types)]\nuse csv_deserializer::create_enum;\nuse std::str::FromStr;
-    \n{}\n{}", enums, struc);
+    \n{enums}\n{struc}");
 }
 
 #[derive(Parser)]
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .has_headers(true)
         .from_reader(file);
     let possible_nulls = match &null_values{
-        Some(s) => s.split(',').map(|x|x.trim()).collect::<Vec<&str>>(),
+        Some(s) => s.split(',').map(str::trim).collect::<Vec<&str>>(),
         None => Vec::new(),
     };
 
@@ -59,7 +59,7 @@ impl fmt::Display for LocalCsvError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::PathNotExists => write!(f, "The path provided does not exist."),
-            Self::PathUnreachable(e) => write!(f, "System access error: {}", e),
+            Self::PathUnreachable(e) => write!(f, "System access error: {e}"),
             Self::NotAFile => write!(
                 f,
                 "The path exists but it is not a file (is it a directory?)."
@@ -87,10 +87,10 @@ fn custom_csv_path_validator(path_str: &str) -> Result<PathBuf, LocalCsvError> {
 
     // 3. Check Extension
     if let Some(ext) = path.extension() {
-        if ext != "csv" {
-            Err(LocalCsvError::NotACsv)
-        } else {
+        if ext == "csv" {
             Ok(path)
+        } else {
+            Err(LocalCsvError::NotACsv)
         }
     } else {
         Err(LocalCsvError::MissingExtension)

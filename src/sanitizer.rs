@@ -70,7 +70,7 @@ pub fn sanitize_identifier(raw: &str) -> String {
 
     // Ensure it doesn't start with a number (our mapping logic prevents this,
     // but as a safeguard if the mapping changes):
-    if sanitized.chars().next().is_some_and(|c| c.is_numeric()) {
+    if sanitized.chars().next().is_some_and(char::is_numeric) {
         format!("N{}", sanitized)
     } else {
         sanitized

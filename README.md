@@ -45,6 +45,31 @@ Options:
 - `--null-values` is an optional comma separate list of string which will be converted to the Null variant which all generated enums have
 
 # Lib Usage Guide
+There is 2 struct to represent the csv file as rust type:
+```rust
+#[derive(Debug)]
+pub struct CsvDataset<'a> {
+    pub names: Vec<ColName>,
+    pub values: Vec<Vec<CsvAny>>,
+    pub null_values: NullValues<'a>,
+    pub info: Vec<ColumnInfo>,
+}
+```
+1. `CsvDataset` is defined in the lib.rs. It can also be used to easily load a csv 
+Every csv "cell" is stored in `CsvAny` type:
+```rust
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
+pub enum CsvAny {
+    Str(String),
+    Int(i64),
+    Float(f64),
+    Null,  // to represent null values
+    Empty, // if it is just empty
+}
+```
+
+2. `CsvDataFrame` is generated from the binary of this crate so it is available only after you put the rust generated code in a rs file and defined it as a module. The exact structure depends on the csv file you passed, i.e. name of the columns, unique values for each column. (See the iris example as a reference of the structure of this type) 
+
 
 To use this library for generating and utilizing a typed Rust interface for your CSV files, follow these steps:
 

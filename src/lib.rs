@@ -9,7 +9,7 @@ use std::io;
 
 use csv::Reader;
 
-use crate::{dataset_info::ColumnInfo, sanitizer::sanitize_identifier};
+use crate::{dataset_info::{ColumnInfo, Variant}, sanitizer::sanitize_identifier};
 
 pub const COLUMN_TYPE_ENUM_NAME: &str = "CsvColumn";
 pub const MAIN_STRUCT_NAME: &str = "CsvDataFrame";
@@ -64,7 +64,7 @@ impl<'a> CsvDataset<'a> {
                 .for_each(|(column_index, value)| {
                     let k = values.get_mut(column_index).unwrap();
                     k.push(RawCsvValue(value).as_csvany(&null_values));
-                })
+                });
         });
 
         Self {
@@ -89,6 +89,25 @@ impl<'a> CsvDataset<'a> {
             &mut self.info,
         )
     }
+
+    /// Analyze every cell in the csv file to extract every unique value
+    pub fn populate_column_infos(dataset: &mut CsvDataset){
+    
+    let (value_names_view, info) = dataset.split_view_and_info();
+    let col_name = value_names_view.names;
+    
+    for col_name in col_name {
+
+        let mut col_info = ColumnInfo::new(value_names_view, &col_name.raw);
+
+        if !col_info.unique_values.iter().any(|x| x.csvany == CsvAny::Null){
+            let str = String::from("Null");
+            col_info.unique_values.push(Variant{ raw: str.clone(), sanitized: str, csvany: CsvAny::Null});
+        }
+
+        info.push(col_info.clone());
+    }
+}
 }
 
 #[derive(Debug)]
