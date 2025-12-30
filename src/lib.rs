@@ -38,8 +38,8 @@ pub struct ValueNamesView<'a> {
 }
 #[derive(Debug)]
 pub struct ValueNamesMut<'a> {
-    pub values: &'a [&'a mut Vec<CsvAny>],
-    pub names: &'a [&'a mut ColName],
+    pub values: &'a [Vec<CsvAny>],
+    pub names: &'a [ColName],
 }
 
 #[derive(Debug, Clone)]
@@ -101,10 +101,16 @@ impl<'a> CsvDataset<'a> {
             info: Vec::new(),
         }
     }
-    pub fn view_names_and_values(&self) -> ValueNamesView<'_> {
+    pub fn names_and_values_view(&self) -> ValueNamesView<'_> {
         ValueNamesView {
             values: &self.values,
             names: &self.names,
+        }
+    }
+    pub fn names_and_values_mut(&mut self) -> ValueNamesMut<'_> {
+        ValueNamesMut {
+            values: self.values.as_mut_slice(),
+            names: self.names.as_mut_slice(),
         }
     }
     pub fn split_view_and_info(&mut self) -> (ValueNamesView<'_>, &mut Vec<ColumnInfo>) {

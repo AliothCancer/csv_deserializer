@@ -1,3 +1,14 @@
+# Note on installation
+Versions present in crates.io have been yanked cause I am now aware that I need to push very frequently and it is not ok to publish a new version for very little changes, and also this library is not ready for a release.
+
+So just use the repo indicating the git link in Cargo.toml:
+```
+#Cargo.toml
+
+[dependencies]
+csv_deserializer = {git = "https://github.com/AliothCancer/csv_deserializer.git"}
+```
+
 # What is this repo?
 This repo contains a rust binary (main.rs) which translate a csv table in rust types, every column is converted into a Vec of enum representing all the unique types, if a column is of String type then every unique String will be deserialized as an enum variant (see iris dataset example).
 
