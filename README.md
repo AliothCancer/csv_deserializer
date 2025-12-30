@@ -1,4 +1,4 @@
-# Note on installation
+# Note on crate installation
 Versions present in crates.io have been yanked cause I am now aware that I need to push very frequently and it is not ok to publish a new version for very little changes, and also this library is not ready for a release.
 
 So just use the repo indicating the git link in Cargo.toml:
