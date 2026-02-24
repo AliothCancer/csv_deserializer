@@ -82,6 +82,11 @@ pub fn generate_enums_from(dataset: &mut CsvDataset) -> String{
 
 
         if !col_info.unique_values.iter().any(|x| x.csvany == CsvAny::Null){
+            // Here I add a null variant because it can be useful
+            // to have null variant to represent a column, this is different
+            // from the CsvDataset::populate_columns_infos which only need to
+            // spot the present variants to also signal if there is or not null
+            // values
             let str = String::from("Null");
             col_info.unique_values.push(Variant{ raw: str.clone(), sanitized: str, csvany: CsvAny::Null});
         }

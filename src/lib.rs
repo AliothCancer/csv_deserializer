@@ -13,7 +13,7 @@ pub const MAIN_STRUCT_NAME: &str = "CsvDataFrame";
 /// A view over all the column names and
 /// all the values
 #[derive(Debug, Clone, Copy)]
-pub struct ValueNamesView<'a> {
+pub struct ValuesNamesView<'a> {
     pub values: &'a [Vec<CsvAny>],
     pub names: &'a [ColName],
 }
@@ -27,7 +27,7 @@ pub struct ValueNamesMut<'a> {
 }
 
 #[derive(Debug)]
-pub struct RemovedColumn{
+pub struct RemovedColumn {
     pub col_values: Vec<CsvAny>,
     pub name: ColName,
 }
@@ -125,7 +125,7 @@ mod test {
             info: Vec::new(),
         };
 
-        CsvDataset::populate_column_infos(&mut df);
+        df.populate_columns_infos();
 
         // Ensure info was created for each column
         assert_eq!(df.info.len(), 2);
@@ -135,18 +135,12 @@ mod test {
 
         // --- Assert Counters (Total occurrences, NOT unique) ---
         // We had 3 Ints total (10, 10, 20)
-        assert_eq!(info1.number_of_ints, 3, "Should count 3 integers total");
-
-        assert_eq!(info1.number_of_strings, 3, "Should count 3 string");
-
-        assert_eq!(info1.number_of_nulls, 2, "Should count 2 null");
-
-        assert_eq!(info1.number_of_empties, 2, "Should count 2 empty");
-
-        assert_eq!(info1.number_of_floats, 2, "Should count 2 floats");
-
+        assert_eq!(info1.type_countmap.number_of_ints, 3, "Should count 3 integers total");
+        assert_eq!(info1.type_countmap.number_of_strings, 3, "Should count 3 string");
+        assert_eq!(info1.type_countmap.number_of_nulls, 2, "Should count 2 null");
+        assert_eq!(info1.type_countmap.number_of_empties, 2, "Should count 2 empty");
+        assert_eq!(info1.type_countmap.number_of_floats, 2, "Should count 2 floats");
         assert_eq!(info1.unique_values.len(), 7, "Should have 7 unique values");
-
         // Verify sanitized name on the Info struct matches input
         assert_eq!(info1.column_name.raw, "mixed_data");
     }

@@ -3,15 +3,15 @@ use std::io;
 use csv::Reader;
 
 use crate::{
-    ColName, NullValues, RawCsvValue, RemovedColumn, SanitizedStr, ValueNamesMut, ValueNamesView,
+    ColName, NullValues, RawCsvValue, RemovedColumn, SanitizedStr, ValueNamesMut, ValuesNamesView,
     csv_types::CsvAny,
-    dataset_info::{ColumnInfo, Variant},
+    dataset_info::ColumnInfo,
     sanitizer::sanitize_identifier,
 };
 
 /// This is a form to represent the dataset
 /// which does not deep typization but can still
-/// be usefull, also info field holds some info about the
+/// be useful, also info field holds some info about the
 /// types for each column
 #[derive(Debug, Default)]
 pub struct CsvDataset<'a> {
@@ -22,6 +22,19 @@ pub struct CsvDataset<'a> {
 }
 
 impl<'a> CsvDataset<'a> {
+    /// Get the `ColumnInfo` for the column
+    /// matching the raw string name (non sanitized)
+    pub fn get_info_column(&self, raw_colname: &str) -> &ColumnInfo {
+        self.info
+            .iter()
+            .find(|x| x.column_name.raw == raw_colname)
+            .expect("There is a column named target (non sanitized)")
+    }
+
+    pub fn columns_as_str(&self) -> Vec<&String> {
+        self.names.iter().map(|x| &x.raw).collect::<Vec<_>>()
+    }
+
     /// Lenght of column values are not checked, so every column can have
     /// different lenght, be aware of row indexing
     pub fn push(&mut self, col_name: &str, col_values: Vec<CsvAny>) {
@@ -71,8 +84,8 @@ impl<'a> CsvDataset<'a> {
             info: Vec::new(),
         }
     }
-    pub fn names_and_values_view(&self) -> ValueNamesView<'_> {
-        ValueNamesView {
+    pub fn names_and_values_view(&self) -> ValuesNamesView<'_> {
+        ValuesNamesView {
             values: &self.values,
             names: &self.names,
         }
@@ -83,9 +96,10 @@ impl<'a> CsvDataset<'a> {
             names: self.names.as_mut_slice(),
         }
     }
-    pub fn split_view_and_info(&mut self) -> (ValueNamesView<'_>, &mut Vec<ColumnInfo>) {
+
+    pub fn split_view_and_info(&mut self) -> (ValuesNamesView<'_>, &mut Vec<ColumnInfo>) {
         (
-            ValueNamesView {
+            ValuesNamesView {
                 values: &self.values,
                 names: &self.names,
             },
@@ -94,26 +108,12 @@ impl<'a> CsvDataset<'a> {
     }
 
     /// Analyze every cell in the csv file to extract every unique value
-    pub fn populate_column_infos(dataset: &mut Self) {
-        let (value_names_view, info) = dataset.split_view_and_info();
+    pub fn populate_columns_infos(&mut self) {
+        let (value_names_view, info) = self.split_view_and_info();
         let col_name = value_names_view.names;
 
         for col_name in col_name {
-            let mut col_info = ColumnInfo::new(value_names_view, &col_name.raw);
-
-            if !col_info
-                .unique_values
-                .iter()
-                .any(|x| x.csvany == CsvAny::Null)
-            {
-                let str = String::from("Null");
-                col_info.unique_values.push(Variant {
-                    raw: str.clone(),
-                    sanitized: str,
-                    csvany: CsvAny::Null,
-                });
-            }
-
+            let col_info = ColumnInfo::new(value_names_view, &col_name.raw);
             info.push(col_info.clone());
         }
     }
