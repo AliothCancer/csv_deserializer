@@ -1,6 +1,5 @@
 pub mod cell_wrapper;
 pub mod columns;
-pub mod rows;
 
 use std::{io::BufReader, path::Path};
 
