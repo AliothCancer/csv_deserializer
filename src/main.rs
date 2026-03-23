@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use csv_deserializer::dataset::columns::Columns;
+use csv_deserializer::dataset::columns::{Columns, column_data::ColData};
 
 fn main() {
     let p = Path::new("example").join("iris").join("iris.csv");
@@ -8,5 +8,9 @@ fn main() {
     let rdr = csv::ReaderBuilder::new().from_path(p).unwrap();
     let df = Columns::from_reader(rdr).unwrap();
 
-    dbg!(df);
+    for col in df.data {
+        if let ColData::Floats(data) = col {
+            dbg!(data.iter().sum::<f64>() / data.len() as f64);
+        }
+    }
 }

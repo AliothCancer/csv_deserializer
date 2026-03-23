@@ -5,41 +5,23 @@ use std::io::Read;
 
 use crate::dataset::{
     Layout,
-    cell_wrapper::CsvCell,
-    columns::{accumulator::ColumnAccumulator, column_data::ColumnData},
+    columns::{accumulator::ColumnAccumulator, column_data::ColData},
 };
 
 #[derive(Debug)]
 pub struct Columns {
-    col_names: Vec<String>,
-    data: Vec<ColumnData>, // una per colonna
+    pub col_names: Vec<String>,
+    pub data: Vec<ColData>, // una per colonna
 }
 
 impl Columns {
-    pub fn from_reader<R: Read>(mut reader: csv::Reader<R>) -> Result<Self, csv::Error> {
-        let col_names = reader
-            .headers()?
-            .into_iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>();
-        let num_cols = col_names.len();
-
-        let mut acc = ColumnAccumulator::new(num_cols);
-
-        let mut record = csv::ByteRecord::new();
-        while reader.read_byte_record(&mut record)? {
-            for (i, field) in record.iter().enumerate() {
-                let s = std::str::from_utf8(field).unwrap_or("");
-                let cell = CsvCell::parse(s);
-
-                acc.get_mut_column(i).update(cell);
-            }
-        }
-
-        // Conversion from RawCol to Inferred variant of ColumnData
-        let data = acc.raw_columns.into_iter().map(ColumnData::new).collect();
-
-        Ok(Columns { col_names, data })
+    pub fn from_reader<R: Read>(reader: csv::Reader<R>) -> Result<Self, csv::Error> {
+        ColumnAccumulator::new(reader)?
+            .accumulate()?
+            .infer_columns()
+    }
+    pub fn get_column(&self, index: usize) -> Option<&ColData> {
+        self.data.get(index)
     }
 }
 

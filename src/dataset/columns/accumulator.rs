@@ -1,17 +1,69 @@
-use crate::dataset::cell_wrapper::CsvCell;
+use std::io::Read;
 
-pub(crate) struct ColumnAccumulator {
-    // Gather all csv records in a columnar structure
-    pub(crate) raw_columns: Vec<RawCol>,
+use crate::dataset::{
+    cell_wrapper::CsvCell,
+    columns::{Columns, column_data::ColData},
+};
+
+pub(crate) struct ColumnAccumulator<S: ColAccState, R> {
+    col_names: Vec<String>,
+    raw_columns: Vec<RawCol>,
+    reader: csv::Reader<R>,
+    _state: State<S>,
 }
-impl ColumnAccumulator {
-    pub(crate) fn new(num_cols: usize) -> Self {
-        ColumnAccumulator {
+pub struct Empty;
+pub struct Populated;
+pub struct State<T: ColAccState>(T);
+pub trait ColAccState {}
+impl ColAccState for Empty {}
+impl ColAccState for Populated {}
+impl<R: Read> ColumnAccumulator<Empty, R> {
+    // Resp: object construction
+    pub(crate) fn new(mut reader: csv::Reader<R>) -> Result<Self, csv::Error> {
+        let col_names = reader
+            .headers()
+            .unwrap()
+            .into_iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>();
+        let num_cols = col_names.len();
+        Ok(ColumnAccumulator {
+            col_names,
             raw_columns: vec![RawCol::new(); num_cols],
-        }
+            reader,
+            _state: State(Empty),
+        })
     }
+
+    // Resp: mutable access to single column
     pub(crate) fn get_mut_column(&mut self, index: usize) -> &mut RawCol {
         self.raw_columns.get_mut(index).unwrap()
+    }
+
+    // Resp: handling I/O
+    pub fn accumulate(mut self) -> Result<ColumnAccumulator<Populated, R>, csv::Error> {
+        let mut record = csv::StringRecord::new();
+        while self.reader.read_record(&mut record)? {
+            for (i, field) in record.iter().enumerate() {
+                let cell = CsvCell::parse(field);
+
+                self.get_mut_column(i).update(cell);
+            }
+        }
+        Ok(ColumnAccumulator {
+            _state: State(Populated),
+            raw_columns: self.raw_columns,
+            reader: self.reader,
+            col_names: self.col_names,
+        })
+    }
+}
+impl<R: Read> ColumnAccumulator<Populated, R> {
+    pub fn infer_columns(self) -> Result<Columns, csv::Error> {
+        Ok(Columns {
+            col_names: self.col_names,
+            data: self.raw_columns.into_iter().map(ColData::new).collect(),
+        })
     }
 }
 

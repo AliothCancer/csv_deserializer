@@ -3,7 +3,7 @@ use crate::dataset::{
     columns::accumulator::{ColumnTypes, RawCol},
 };
 #[derive(Debug)]
-pub enum ColumnData {
+pub enum ColData {
     Ints(Vec<i64>),
     Floats(Vec<f64>),
     Strings(Vec<String>),
@@ -11,7 +11,7 @@ pub enum ColumnData {
     NullableFloats(Vec<Option<f64>>),
     NullableStrings(Vec<Option<String>>),
 }
-impl ColumnData {
+impl ColData {
     pub(crate) fn new(raw_col: RawCol) -> Self {
         let types = raw_col.types;
         let nullable = types.has_null || types.has_empty;
@@ -19,7 +19,7 @@ impl ColumnData {
         match types {
             ColumnTypes { has_str: true, .. } => {
                 if nullable {
-                    ColumnData::NullableStrings(
+                    ColData::NullableStrings(
                         raw_col
                             .cells
                             .into_iter()
@@ -32,7 +32,7 @@ impl ColumnData {
                             .collect(),
                     )
                 } else {
-                    ColumnData::Strings(
+                    ColData::Strings(
                         raw_col
                             .cells
                             .into_iter()
@@ -52,7 +52,7 @@ impl ColumnData {
             } => {
                 // promuovi Int → f64
                 if nullable {
-                    ColumnData::NullableFloats(
+                    ColData::NullableFloats(
                         raw_col
                             .cells
                             .into_iter()
@@ -65,7 +65,7 @@ impl ColumnData {
                             .collect(),
                     )
                 } else {
-                    ColumnData::Floats(
+                    ColData::Floats(
                         raw_col
                             .cells
                             .into_iter()
@@ -81,7 +81,7 @@ impl ColumnData {
 
             ColumnTypes { has_int: true, .. } => {
                 if nullable {
-                    ColumnData::NullableInts(
+                    ColData::NullableInts(
                         raw_col
                             .cells
                             .into_iter()
@@ -93,7 +93,7 @@ impl ColumnData {
                             .collect(),
                     )
                 } else {
-                    ColumnData::Ints(
+                    ColData::Ints(
                         raw_col
                             .cells
                             .into_iter()
@@ -107,7 +107,7 @@ impl ColumnData {
             }
 
             // colonna interamente vuota/null
-            _ => ColumnData::NullableStrings(raw_col.cells.into_iter().map(|_| None).collect()),
+            _ => ColData::NullableStrings(raw_col.cells.into_iter().map(|_| None).collect()),
         }
     }
 }

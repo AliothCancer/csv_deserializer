@@ -1,0 +1,341 @@
+src/main.rs:use std::path::Path;
+src/main.rs:use csv_deserializer::dataset::columns::{Columns, column_data::ColData};
+src/main.rs:fn main() {
+src/main.rs:    let p = Path::new("example").join("iris").join("iris.csv");
+src/main.rs:    assert!(p.exists());
+src/main.rs:    let rdr = csv::ReaderBuilder::new().from_path(p).unwrap();
+src/main.rs:    let df = Columns::from_reader(rdr).unwrap();
+src/main.rs:    for col in df.data {
+src/main.rs:        if let ColData::Floats(data) = col {
+src/main.rs:            dbg!(data.iter().sum::<f64>() / data.len() as f64);
+src/main.rs:        }
+src/main.rs:    }
+src/main.rs:}
+src/dataset.rs:pub mod cell_wrapper;
+src/dataset.rs:pub mod columns;
+src/dataset.rs:use std::{io::BufReader, path::Path};
+src/dataset.rs:use csv::ReaderBuilder;
+src/dataset.rs:use crate::dataset::cell_wrapper::CsvCell;
+src/dataset.rs:pub struct CsvDataset<L: Layout> {
+src/dataset.rs:    columns: Vec<String>,
+src/dataset.rs:    datas: L,
+src/dataset.rs:}
+src/dataset.rs:/// Assumes a default config for `csv::ReaderBuilder`:
+src/dataset.rs:/// - presence of headers (column names)
+src/dataset.rs:/// - delimiter is comma (the `,` char)
+src/dataset.rs:fn reader_from_path(path: &Path) -> csv::Reader<std::fs::File> {
+src/dataset.rs:    ReaderBuilder::new()
+src/dataset.rs:        .has_headers(true)
+src/dataset.rs:        .delimiter(b',')
+src/dataset.rs:        .from_path(path)
+src/dataset.rs:        .unwrap()
+src/dataset.rs:}
+src/dataset.rs:/// Mostly a marker trait for the two type of layout
+src/dataset.rs:/// warning: it is not an abstraction over the csv
+src/dataset.rs:/// that define the same operation for 2 different layout
+src/dataset.rs:/// because of performance and coherence over eteregeneous types
+src/dataset.rs:pub trait Layout {}
+src/dataset.rs:#[cfg(test)]
+src/dataset.rs:mod tests {}
+src/lib.rs:pub mod dataset;
+src/dataset/columns/column_data.rs:use crate::dataset::{
+src/dataset/columns/column_data.rs:    cell_wrapper::CsvCell,
+src/dataset/columns/column_data.rs:    columns::accumulator::{ColumnTypes, RawCol},
+src/dataset/columns/column_data.rs:};
+src/dataset/columns/column_data.rs:#[derive(Debug)]
+src/dataset/columns/column_data.rs:pub enum ColData {
+src/dataset/columns/column_data.rs:    Ints(Vec<i64>),
+src/dataset/columns/column_data.rs:    Floats(Vec<f64>),
+src/dataset/columns/column_data.rs:    Strings(Vec<String>),
+src/dataset/columns/column_data.rs:    NullableInts(Vec<Option<i64>>),
+src/dataset/columns/column_data.rs:    NullableFloats(Vec<Option<f64>>),
+src/dataset/columns/column_data.rs:    NullableStrings(Vec<Option<String>>),
+src/dataset/columns/column_data.rs:}
+src/dataset/columns/column_data.rs:impl ColData {
+src/dataset/columns/column_data.rs:    pub(crate) fn new(raw_col: RawCol) -> Self {
+src/dataset/columns/column_data.rs:        let types = raw_col.types;
+src/dataset/columns/column_data.rs:        let nullable = types.has_null || types.has_empty;
+src/dataset/columns/column_data.rs:        match types {
+src/dataset/columns/column_data.rs:            ColumnTypes { has_str: true, .. } => {
+src/dataset/columns/column_data.rs:                if nullable {
+src/dataset/columns/column_data.rs:                    ColData::NullableStrings(
+src/dataset/columns/column_data.rs:                        raw_col
+src/dataset/columns/column_data.rs:                            .cells
+src/dataset/columns/column_data.rs:                            .into_iter()
+src/dataset/columns/column_data.rs:                            .map(|c| match c {
+src/dataset/columns/column_data.rs:                                CsvCell::Str(s) => Some(s),
+src/dataset/columns/column_data.rs:                                CsvCell::Int(i) => Some(i.to_string()),
+src/dataset/columns/column_data.rs:                                CsvCell::Float(f) => Some(f.to_string()),
+src/dataset/columns/column_data.rs:                                CsvCell::Null | CsvCell::Empty => None,
+src/dataset/columns/column_data.rs:                            })
+src/dataset/columns/column_data.rs:                            .collect(),
+src/dataset/columns/column_data.rs:                    )
+src/dataset/columns/column_data.rs:                } else {
+src/dataset/columns/column_data.rs:                    ColData::Strings(
+src/dataset/columns/column_data.rs:                        raw_col
+src/dataset/columns/column_data.rs:                            .cells
+src/dataset/columns/column_data.rs:                            .into_iter()
+src/dataset/columns/column_data.rs:                            .map(|c| match c {
+src/dataset/columns/column_data.rs:                                CsvCell::Str(s) => s,
+src/dataset/columns/column_data.rs:                                CsvCell::Int(i) => i.to_string(),
+src/dataset/columns/column_data.rs:                                CsvCell::Float(f) => f.to_string(),
+src/dataset/columns/column_data.rs:                                _ => unreachable!(),
+src/dataset/columns/column_data.rs:                            })
+src/dataset/columns/column_data.rs:                            .collect(),
+src/dataset/columns/column_data.rs:                    )
+src/dataset/columns/column_data.rs:                }
+src/dataset/columns/column_data.rs:            }
+src/dataset/columns/column_data.rs:            ColumnTypes {
+src/dataset/columns/column_data.rs:                has_float: true, ..
+src/dataset/columns/column_data.rs:            } => {
+src/dataset/columns/column_data.rs:                // promuovi Int → f64
+src/dataset/columns/column_data.rs:                if nullable {
+src/dataset/columns/column_data.rs:                    ColData::NullableFloats(
+src/dataset/columns/column_data.rs:                        raw_col
+src/dataset/columns/column_data.rs:                            .cells
+src/dataset/columns/column_data.rs:                            .into_iter()
+src/dataset/columns/column_data.rs:                            .map(|c| match c {
+src/dataset/columns/column_data.rs:                                CsvCell::Float(f) => Some(f),
+src/dataset/columns/column_data.rs:                                CsvCell::Int(i) => Some(i as f64),
+src/dataset/columns/column_data.rs:                                CsvCell::Null | CsvCell::Empty => None,
+src/dataset/columns/column_data.rs:                                _ => unreachable!(),
+src/dataset/columns/column_data.rs:                            })
+src/dataset/columns/column_data.rs:                            .collect(),
+src/dataset/columns/column_data.rs:                    )
+src/dataset/columns/column_data.rs:                } else {
+src/dataset/columns/column_data.rs:                    ColData::Floats(
+src/dataset/columns/column_data.rs:                        raw_col
+src/dataset/columns/column_data.rs:                            .cells
+src/dataset/columns/column_data.rs:                            .into_iter()
+src/dataset/columns/column_data.rs:                            .map(|c| match c {
+src/dataset/columns/column_data.rs:                                CsvCell::Float(f) => f,
+src/dataset/columns/column_data.rs:                                CsvCell::Int(i) => i as f64,
+src/dataset/columns/column_data.rs:                                _ => unreachable!(),
+src/dataset/columns/column_data.rs:                            })
+src/dataset/columns/column_data.rs:                            .collect(),
+src/dataset/columns/column_data.rs:                    )
+src/dataset/columns/column_data.rs:                }
+src/dataset/columns/column_data.rs:            }
+src/dataset/columns/column_data.rs:            ColumnTypes { has_int: true, .. } => {
+src/dataset/columns/column_data.rs:                if nullable {
+src/dataset/columns/column_data.rs:                    ColData::NullableInts(
+src/dataset/columns/column_data.rs:                        raw_col
+src/dataset/columns/column_data.rs:                            .cells
+src/dataset/columns/column_data.rs:                            .into_iter()
+src/dataset/columns/column_data.rs:                            .map(|c| match c {
+src/dataset/columns/column_data.rs:                                CsvCell::Int(i) => Some(i),
+src/dataset/columns/column_data.rs:                                CsvCell::Null | CsvCell::Empty => None,
+src/dataset/columns/column_data.rs:                                _ => unreachable!(),
+src/dataset/columns/column_data.rs:                            })
+src/dataset/columns/column_data.rs:                            .collect(),
+src/dataset/columns/column_data.rs:                    )
+src/dataset/columns/column_data.rs:                } else {
+src/dataset/columns/column_data.rs:                    ColData::Ints(
+src/dataset/columns/column_data.rs:                        raw_col
+src/dataset/columns/column_data.rs:                            .cells
+src/dataset/columns/column_data.rs:                            .into_iter()
+src/dataset/columns/column_data.rs:                            .map(|c| match c {
+src/dataset/columns/column_data.rs:                                CsvCell::Int(i) => i,
+src/dataset/columns/column_data.rs:                                _ => unreachable!(),
+src/dataset/columns/column_data.rs:                            })
+src/dataset/columns/column_data.rs:                            .collect(),
+src/dataset/columns/column_data.rs:                    )
+src/dataset/columns/column_data.rs:                }
+src/dataset/columns/column_data.rs:            }
+src/dataset/columns/column_data.rs:            // colonna interamente vuota/null
+src/dataset/columns/column_data.rs:            _ => ColData::NullableStrings(raw_col.cells.into_iter().map(|_| None).collect()),
+src/dataset/columns/column_data.rs:        }
+src/dataset/columns/column_data.rs:    }
+src/dataset/columns/column_data.rs:}
+src/dataset/columns/accumulator.rs:use std::{fs::File, io::Read, marker::PhantomData};
+src/dataset/columns/accumulator.rs:use crate::dataset::{
+src/dataset/columns/accumulator.rs:    cell_wrapper::CsvCell,
+src/dataset/columns/accumulator.rs:    columns::{Columns, column_data::ColData},
+src/dataset/columns/accumulator.rs:};
+src/dataset/columns/accumulator.rs:pub(crate) struct ColumnAccumulator<State, R> {
+src/dataset/columns/accumulator.rs:    col_names: Vec<String>,
+src/dataset/columns/accumulator.rs:    raw_columns: Vec<RawCol>,
+src/dataset/columns/accumulator.rs:    reader: csv::Reader<R>,
+src/dataset/columns/accumulator.rs:    _t: PhantomData<State>,
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns/accumulator.rs:pub struct Empty;
+src/dataset/columns/accumulator.rs:pub struct Populated;
+src/dataset/columns/accumulator.rs:impl<R: Read> ColumnAccumulator<Empty, R> {
+src/dataset/columns/accumulator.rs:    // Resp: object construction
+src/dataset/columns/accumulator.rs:    pub(crate) fn new(mut reader: csv::Reader<R>) -> Result<Self, csv::Error> {
+src/dataset/columns/accumulator.rs:        let col_names = reader
+src/dataset/columns/accumulator.rs:            .headers()
+src/dataset/columns/accumulator.rs:            .unwrap()
+src/dataset/columns/accumulator.rs:            .into_iter()
+src/dataset/columns/accumulator.rs:            .map(|x| x.to_string())
+src/dataset/columns/accumulator.rs:            .collect::<Vec<String>>();
+src/dataset/columns/accumulator.rs:        let num_cols = col_names.len();
+src/dataset/columns/accumulator.rs:        Ok(ColumnAccumulator {
+src/dataset/columns/accumulator.rs:            col_names,
+src/dataset/columns/accumulator.rs:            raw_columns: vec![RawCol::new(); num_cols],
+src/dataset/columns/accumulator.rs:            reader,
+src/dataset/columns/accumulator.rs:            _t: PhantomData,
+src/dataset/columns/accumulator.rs:        })
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:    // Resp: mutable access to single column
+src/dataset/columns/accumulator.rs:    pub(crate) fn get_mut_column(&mut self, index: usize) -> &mut RawCol {
+src/dataset/columns/accumulator.rs:        self.raw_columns.get_mut(index).unwrap()
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:    // Resp: handling I/O
+src/dataset/columns/accumulator.rs:    pub fn accumulate(mut self) -> Result<ColumnAccumulator<Populated, R>, csv::Error> {
+src/dataset/columns/accumulator.rs:        let mut record = csv::ByteRecord::new();
+src/dataset/columns/accumulator.rs:        while self.reader.read_byte_record(&mut record)? {
+src/dataset/columns/accumulator.rs:            for (i, field) in record.iter().enumerate() {
+src/dataset/columns/accumulator.rs:                let s = std::str::from_utf8(field).unwrap_or("");
+src/dataset/columns/accumulator.rs:                let cell = CsvCell::parse(s);
+src/dataset/columns/accumulator.rs:                self.get_mut_column(i).update(cell);
+src/dataset/columns/accumulator.rs:            }
+src/dataset/columns/accumulator.rs:        }
+src/dataset/columns/accumulator.rs:        Ok(ColumnAccumulator {
+src/dataset/columns/accumulator.rs:            _t: PhantomData::<Populated>,
+src/dataset/columns/accumulator.rs:            raw_columns: self.raw_columns,
+src/dataset/columns/accumulator.rs:            reader: self.reader,
+src/dataset/columns/accumulator.rs:            col_names: self.col_names,
+src/dataset/columns/accumulator.rs:        })
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns/accumulator.rs:impl<R: Read> ColumnAccumulator<Populated, R> {
+src/dataset/columns/accumulator.rs:    pub fn infer_columns(self) -> Result<Columns, csv::Error> {
+src/dataset/columns/accumulator.rs:        Ok(Columns {
+src/dataset/columns/accumulator.rs:            col_names: self.col_names,
+src/dataset/columns/accumulator.rs:            data: self.raw_columns.into_iter().map(ColData::new).collect(),
+src/dataset/columns/accumulator.rs:        })
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns/accumulator.rs:#[derive(Debug, Clone, Copy)]
+src/dataset/columns/accumulator.rs:pub(crate) struct ColumnTypes {
+src/dataset/columns/accumulator.rs:    pub(crate) has_int: bool,
+src/dataset/columns/accumulator.rs:    pub(crate) has_float: bool,
+src/dataset/columns/accumulator.rs:    pub(crate) has_str: bool,
+src/dataset/columns/accumulator.rs:    pub(crate) has_null: bool,
+src/dataset/columns/accumulator.rs:    pub(crate) has_empty: bool,
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns/accumulator.rs:impl ColumnTypes {
+src/dataset/columns/accumulator.rs:    fn new() -> Self {
+src/dataset/columns/accumulator.rs:        ColumnTypes {
+src/dataset/columns/accumulator.rs:            has_int: false,
+src/dataset/columns/accumulator.rs:            has_float: false,
+src/dataset/columns/accumulator.rs:            has_str: false,
+src/dataset/columns/accumulator.rs:            has_null: false,
+src/dataset/columns/accumulator.rs:            has_empty: false,
+src/dataset/columns/accumulator.rs:        }
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:    fn update(&mut self, cell: &CsvCell) {
+src/dataset/columns/accumulator.rs:        match cell {
+src/dataset/columns/accumulator.rs:            CsvCell::Int(_) => self.has_int = true,
+src/dataset/columns/accumulator.rs:            CsvCell::Float(_) => self.has_float = true,
+src/dataset/columns/accumulator.rs:            CsvCell::Str(_) => self.has_str = true,
+src/dataset/columns/accumulator.rs:            CsvCell::Null => self.has_null = true,
+src/dataset/columns/accumulator.rs:            CsvCell::Empty => self.has_empty = true,
+src/dataset/columns/accumulator.rs:        }
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns/accumulator.rs:#[derive(Debug, Clone)]
+src/dataset/columns/accumulator.rs:pub(crate) struct RawCol {
+src/dataset/columns/accumulator.rs:    pub(crate) cells: Vec<CsvCell>,
+src/dataset/columns/accumulator.rs:    pub(crate) types: ColumnTypes,
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns/accumulator.rs:impl RawCol {
+src/dataset/columns/accumulator.rs:    fn new() -> Self {
+src/dataset/columns/accumulator.rs:        Self {
+src/dataset/columns/accumulator.rs:            cells: vec![],
+src/dataset/columns/accumulator.rs:            types: ColumnTypes::new(),
+src/dataset/columns/accumulator.rs:        }
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:    pub(crate) fn update(&mut self, cell: CsvCell) {
+src/dataset/columns/accumulator.rs:        self.types.update(&cell);
+src/dataset/columns/accumulator.rs:        self.cells.push(cell);
+src/dataset/columns/accumulator.rs:    }
+src/dataset/columns/accumulator.rs:}
+src/dataset/columns.rs:pub mod accumulator;
+src/dataset/columns.rs:pub mod column_data;
+src/dataset/columns.rs:use std::io::Read;
+src/dataset/columns.rs:use crate::dataset::{
+src/dataset/columns.rs:    Layout,
+src/dataset/columns.rs:    columns::{accumulator::ColumnAccumulator, column_data::ColData},
+src/dataset/columns.rs:};
+src/dataset/columns.rs:#[derive(Debug)]
+src/dataset/columns.rs:pub struct Columns {
+src/dataset/columns.rs:    pub col_names: Vec<String>,
+src/dataset/columns.rs:    pub data: Vec<ColData>, // una per colonna
+src/dataset/columns.rs:}
+src/dataset/columns.rs:impl Columns {
+src/dataset/columns.rs:    pub fn from_reader<R: Read>(reader: csv::Reader<R>) -> Result<Self, csv::Error> {
+src/dataset/columns.rs:        ColumnAccumulator::new(reader)?
+src/dataset/columns.rs:            .accumulate()?
+src/dataset/columns.rs:            .infer_columns()
+src/dataset/columns.rs:    }
+src/dataset/columns.rs:    pub fn get_column(&self, index: usize) -> Option<&ColData> {
+src/dataset/columns.rs:        self.data.get(index)
+src/dataset/columns.rs:    }
+src/dataset/columns.rs:}
+src/dataset/columns.rs:impl Layout for Columns {}
+src/dataset/columns.rs:#[cfg(test)]
+src/dataset/columns.rs:mod tests {
+src/dataset/columns.rs:    use super::*;
+src/dataset/columns.rs:    use std::path::Path;
+src/dataset/columns.rs:    #[test]
+src/dataset/columns.rs:    fn parse_csv() {
+src/dataset/columns.rs:        let p = Path::new("example").join("iris").join("iris.csv");
+src/dataset/columns.rs:        assert!(p.exists());
+src/dataset/columns.rs:        let rdr = csv::ReaderBuilder::new().from_path(p).unwrap();
+src/dataset/columns.rs:        let df = Columns::from_reader(rdr).unwrap();
+src/dataset/columns.rs:        dbg!(df);
+src/dataset/columns.rs:    }
+src/dataset/columns.rs:}
+src/dataset/cell_wrapper.rs:use std::num::{ParseFloatError, ParseIntError};
+src/dataset/cell_wrapper.rs:type Integer = i64;
+src/dataset/cell_wrapper.rs:type Float = f64;
+src/dataset/cell_wrapper.rs:#[derive(Debug, PartialEq, PartialOrd, Clone)]
+src/dataset/cell_wrapper.rs:pub enum CsvCell {
+src/dataset/cell_wrapper.rs:    Str(String),
+src/dataset/cell_wrapper.rs:    Int(Integer),
+src/dataset/cell_wrapper.rs:    Float(Float),
+src/dataset/cell_wrapper.rs:    // to represent null values for f64 NaN or other result which produced
+src/dataset/cell_wrapper.rs:    // invalid values or value that are not representable
+src/dataset/cell_wrapper.rs:    Null,
+src/dataset/cell_wrapper.rs:    // if it is just empty: the source was already missing and
+src/dataset/cell_wrapper.rs:    // it wasn't produced in the process of elaboration of this library
+src/dataset/cell_wrapper.rs:    Empty,
+src/dataset/cell_wrapper.rs:}
+src/dataset/cell_wrapper.rs:impl CsvCell {
+src/dataset/cell_wrapper.rs:    pub fn parse(cell_str: &str) -> Self {
+src/dataset/cell_wrapper.rs:        match RawCellMetadata::new(cell_str) {
+src/dataset/cell_wrapper.rs:            RawCellMetadata { is_empty: true, .. } => CsvCell::Empty,
+src/dataset/cell_wrapper.rs:            RawCellMetadata {
+src/dataset/cell_wrapper.rs:                parsable_int: Ok(int),
+src/dataset/cell_wrapper.rs:                ..
+src/dataset/cell_wrapper.rs:            } => CsvCell::Int(int),
+src/dataset/cell_wrapper.rs:            RawCellMetadata {
+src/dataset/cell_wrapper.rs:                parsable_float: Ok(float),
+src/dataset/cell_wrapper.rs:                ..
+src/dataset/cell_wrapper.rs:            } => {
+src/dataset/cell_wrapper.rs:                if float.is_finite() {
+src/dataset/cell_wrapper.rs:                    CsvCell::Float(float)
+src/dataset/cell_wrapper.rs:                } else {
+src/dataset/cell_wrapper.rs:                    CsvCell::Null
+src/dataset/cell_wrapper.rs:                }
+src/dataset/cell_wrapper.rs:            }
+src/dataset/cell_wrapper.rs:            RawCellMetadata { .. } => CsvCell::Str(cell_str.to_string()),
+src/dataset/cell_wrapper.rs:        }
+src/dataset/cell_wrapper.rs:    }
+src/dataset/cell_wrapper.rs:}
+src/dataset/cell_wrapper.rs:struct RawCellMetadata {
+src/dataset/cell_wrapper.rs:    is_empty: bool,
+src/dataset/cell_wrapper.rs:    parsable_int: Result<Integer, ParseIntError>,
+src/dataset/cell_wrapper.rs:    parsable_float: Result<Float, ParseFloatError>,
+src/dataset/cell_wrapper.rs:}
+src/dataset/cell_wrapper.rs:impl RawCellMetadata {
+src/dataset/cell_wrapper.rs:    fn new(s: &str) -> Self {
+src/dataset/cell_wrapper.rs:        Self {
+src/dataset/cell_wrapper.rs:            is_empty: s.is_empty(),
+src/dataset/cell_wrapper.rs:            parsable_int: s.parse(),
+src/dataset/cell_wrapper.rs:            parsable_float: s.parse(),
+src/dataset/cell_wrapper.rs:        }
+src/dataset/cell_wrapper.rs:    }
+src/dataset/cell_wrapper.rs:}
